@@ -8,7 +8,7 @@ namespace Yna.Engine
     /// <summary>
     /// Define a safe updateable list for YnBase objects
     /// </summary>
-    public class YnBasicCollection : YnCollection<GameObject>
+    public class YnBasicCollection : YnCollection<YnBasicEntity>
     {
         protected override void DoUpdate(GameTime gameTime)
         {

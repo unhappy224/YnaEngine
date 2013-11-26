@@ -142,7 +142,7 @@ namespace Yna.Engine.Input
             _moved[index] = touchCollection[index].State == TouchLocationState.Moved;
             _released[index] = touchCollection[index].State == TouchLocationState.Released;
 
-#if MONOGAME
+#if !WINDOWS_PHONE_7 && !XNA
             _pressure[index] = touchCollection[index].Pressure;
 #else
             _pressure[index] = 1.0f;

@@ -4,7 +4,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Yna.Engine.Graphics2D;
+using Yna.Engine.Graphics;
 
 namespace Yna.Engine.Script
 {
@@ -16,7 +16,7 @@ namespace Yna.Engine.Script
     /// Animation process can be controlled at any time to stop, restart, pause or resume the
     /// script processing.
     /// </summary>
-    public class ScriptAnimator : GameObject
+    public class ScriptAnimator : YnBasicEntity
     {
         #region Attributes
 

@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Yna.Engine.State;
 using Yna.Engine.Graphics3D.Camera;
 
 namespace Yna.Engine.Graphics3D
@@ -20,7 +21,7 @@ namespace Yna.Engine.Graphics3D
         /// <summary>
         /// Gets (protected sets) the collection of basic objects.
         /// </summary>
-        public List<GameObject> BasicObjects
+        public List<YnBasicEntity> BasicObjects
         {
             get { return _basicObjects.Members; }
             protected set { _basicObjects.Members = value; }
@@ -169,7 +170,7 @@ namespace Yna.Engine.Graphics3D
         /// </summary>
         /// <param name="basicObject">A basic object like Timer, Camera, etc...</param>
         /// <returns>Return true if the object has been added, otherwise return false.</returns>
-        public bool Add(GameObject basicObject)
+        public bool Add(YnBasicEntity basicObject)
         {
             return _basicObjects.Add(basicObject);
         }
@@ -199,7 +200,7 @@ namespace Yna.Engine.Graphics3D
         /// </summary>
         /// <param name="basicObject">Basic object to remove.</param>
         /// <returns>Return true if the object has been succefully removed, otherwise return false.</returns>
-        public bool Remove(GameObject basicObject)
+        public bool Remove(YnBasicEntity basicObject)
         {
             return _basicObjects.Remove(basicObject);
         }

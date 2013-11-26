@@ -9,7 +9,6 @@ pushd .
 call %msbuild% %flags% Engine.SDL2.sln
 call %msbuild% %flags% Engine.Windows8.sln
 call %msbuild% %flags% Engine.Windows.sln
-call %msbuild% %flags% Engine.WindowsGL.sln
 call %msbuild% %flags% Engine.WindowsPhone.sln
 
 popd

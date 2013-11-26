@@ -5,6 +5,8 @@ using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Yna.Engine.Audio;
+using Yna.Engine.State;
+using Yna.Engine.Helpers;
 using Yna.Engine.Input;
 using Yna.Engine.Storage;
 
@@ -16,6 +18,8 @@ namespace Yna.Engine
     public class YnGame : Game
     {
         protected GraphicsDeviceManager graphics = null;
+        protected SpriteBatch spriteBatch = null;
+        protected StateManager stateManager = null;
         public static string GameTitle = "Yna Game";
         public static string GameVersion = "1.0.0.0";
 
@@ -29,36 +33,36 @@ namespace Yna.Engine
             : base()
         {
             this.graphics = new GraphicsDeviceManager(this);
-            this.Content.RootDirectory = "Content"; 
+            this.Content.RootDirectory = "Content";
+            this.stateManager = new StateManager(this);
+
+            YnKeyboard keyboardComponent = new YnKeyboard(this);
+            YnMouse mouseComponent = new YnMouse(this);
+            YnGamepad gamepadComponent = new YnGamepad(this);
+            YnTouch touchComponent = new YnTouch(this);
+
+            Components.Add(keyboardComponent);
+            Components.Add(mouseComponent);
+            Components.Add(gamepadComponent);
+            Components.Add(touchComponent);
+            Components.Add(stateManager);
 
             // Registry globals objects
             YnG.Game = this;
-            YnG.GraphicsDevice = GraphicsDevice;
             YnG.GraphicsDeviceManager = this.graphics;
-            YnG.Content = this.Content;
-            YnG.StateManager = new StateManager(this);
+            YnG.Keys = keyboardComponent;
+            YnG.Mouse = mouseComponent;
+            YnG.Gamepad = gamepadComponent;
+            YnG.Touch = touchComponent;
+            YnG.StateManager = stateManager;
             YnG.StorageManager = new StorageManager();
             YnG.AudioManager = new AudioManager();
 
-            YnInput.Keys = new YnKeyboard(this);
-            YnInput.Mouse = new YnMouse(this);
-            YnInput.Gamepad = new YnGamepad(this);
-            YnInput.Touch = new YnTouch(this);
-
-            Components.Add(YnInput.Keys);
-            Components.Add(YnInput.Mouse);
-            Components.Add(YnInput.Gamepad);
-            Components.Add(YnInput.Touch);
-            Components.Add(YnG.StateManager);
-
-            YnScreen.Width = this.graphics.PreferredBackBufferWidth;
-            YnScreen.Height = this.graphics.PreferredBackBufferHeight;
-            YnScreen.ReferenceWidth = graphics.PreferredBackBufferWidth;
-            YnScreen.ReferenceHeight = graphics.PreferredBackBufferHeight;
 #if !ANDROID
             this.Window.Title = String.Format("{0} - v{1}", GameTitle, GameVersion);
-            this.Window.ClientSizeChanged += Window_ClientSizeChanged;
 #endif
+            ScreenHelper.ScreenWidthReference = graphics.PreferredBackBufferWidth;
+            ScreenHelper.ScreenHeightReference = graphics.PreferredBackBufferHeight;
 
 #if WINDOWS_PHONE_7
             // 30 FPS for Windows Phone 7
@@ -73,29 +77,28 @@ namespace Yna.Engine
             : this()
         {
 #if XNA || MONOGAME && (OPENGL || DIRECTX || LINUX || MACOSX) ||SDL2
-            YnScreen.Setup(width, height, width, height, true);
+            SetScreenResolution(width, height);
+          
             this.Window.Title = title;
+
+            ScreenHelper.ScreenWidthReference = width;
+            ScreenHelper.ScreenHeightReference = height;
 #endif
+        }
+
+        public YnGame(int width, int height, string title, bool useStateManager)
+            : this(width, height, title)
+        {
+            if (!useStateManager)
+            {
+                this.stateManager.Enabled = false;
+                this.Components.Remove(this.stateManager);
+            }
         }
 
         #endregion
 
-        protected void Window_ClientSizeChanged(object sender, EventArgs e)
-        {
-            YnScreen.Width = this.graphics.PreferredBackBufferWidth;
-            YnScreen.Height = this.graphics.PreferredBackBufferHeight;
-            // TODO use YnScreen
-        }
-
         #region GameState pattern
-
-        protected override void Initialize()
-        {
-            base.Initialize();
-
-            if (YnG.GraphicsDevice == null)
-                YnG.GraphicsDevice = GraphicsDevice;
-        }
 
         /// <summary>
         /// Load assets from content manager
@@ -103,6 +106,7 @@ namespace Yna.Engine
         protected override void LoadContent()
         {
             base.LoadContent();
+            this.spriteBatch = new SpriteBatch(GraphicsDevice);
             GraphicsDevice.Viewport = new Viewport(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
         }
 
@@ -112,8 +116,43 @@ namespace Yna.Engine
         protected override void UnloadContent()
         {
             base.UnloadContent();
+
             YnG.AudioManager.Dispose();
         }
+
+        protected override void Draw(GameTime gameTime)
+        {
+            base.Draw(gameTime);
+        }
+
+        #endregion
+
+        #region Resolution setup
+
+        /// <summary>
+        /// Change the screen resolution
+        /// </summary>
+        /// <param name="width">Screen width</param>
+        /// <param name="height">Screen height</param>
+        public virtual void SetScreenResolution(int width, int height)
+        {
+            this.graphics.PreferredBackBufferWidth = width;
+            this.graphics.PreferredBackBufferHeight = height;
+            this.graphics.ApplyChanges();
+        }
+
+        /// <summary>
+        /// Set maximum resolution supported by the device, It use the desktop resolution
+        /// </summary>
+        /// <param name="fullscreen">Toggle in fullscreen mode</param>
+        public virtual void DetermineBestResolution(bool fullscreen)
+        {
+            SetScreenResolution(GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width, GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height);
+            
+            if (!graphics.IsFullScreen && fullscreen)
+                graphics.ToggleFullScreen();
+        }
+
         #endregion
     }
 }

@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Yna.Engine.Audio;
 using Yna.Engine.Input;
+using Yna.Engine.State;
 using Yna.Engine.Storage;
 
 namespace Yna.Engine
@@ -16,29 +17,17 @@ namespace Yna.Engine
     /// </summary>
     public static class YnG
     {
-        private static int _width;
-        private static int _height;
-        private static Game _game;
-        private static GraphicsDevice _device;
-        private static GraphicsDeviceManager _graphics;
-        private static ContentManager _content;
-
         /// <summary>
         /// Gets or Set the Game instance
         /// </summary>
-        public static Game Game
-        {
-            get { return _game; }
-            internal set { _game = value; }
-        }
+        public static Game Game { get; set; }
 
         /// <summary>
         /// Gets the GraphicsDevice instance relative to the Game object
         /// </summary>
         public static GraphicsDevice GraphicsDevice
         {
-            get { return _device; }
-            internal set { _device = value; }
+            get { return Game.GraphicsDevice; }
         }
 
         #region Managers
@@ -46,29 +35,20 @@ namespace Yna.Engine
         /// <summary>
         /// Gets the GraphicsDeviceManager relative to the Game object
         /// </summary>
-        public static GraphicsDeviceManager GraphicsDeviceManager
-        {
-            get { return _graphics; }
-            internal set { _graphics = value; }
-        }
+        public static GraphicsDeviceManager GraphicsDeviceManager { get; set; }
 
         /// <summary>
         /// Gets the ContentManager instance relative to the Game object
         /// </summary>
         public static ContentManager Content
         {
-            get { return _content; }
-            internal set { _content = value; }
+            get { return Game.Content; }
         }
 
         /// <summary>
         /// Gets or Set the State Manager
         /// </summary>
-        public static StateManager StateManager
-        {
-            get;
-            internal set;
-        }
+        public static StateManager StateManager { get; set; }
 
         /// <summary>
         /// Gets or Set the audio manager
@@ -84,98 +64,126 @@ namespace Yna.Engine
 
         #region Inputs
 
+        /// <summary>
+        /// Gets or Set the keyboard states
+        /// </summary>
+        public static YnKeyboard Keys { get; set; }
+
+        /// <summary>
+        /// Gets or Set the mouse states
+        /// </summary>
+        public static YnMouse Mouse { get; set; }
+
+        /// <summary>
+        /// Gets or Set the Gamepad states
+        /// </summary>
+        public static YnGamepad Gamepad { get; set; }
+
+        /// <summary>
+        /// Gets or Set the Touch states
+        /// </summary>
+        public static YnTouch Touch { get; set; }
+
         public static bool ShowMouse
         {
             get { return Game.IsMouseVisible; }
             set { Game.IsMouseVisible = value; }
         }
 
-        #endregion
-
-        #region StateManager
-
-        // @deprecated
-        public static void SetStateActive(string name, bool desactiveOtherStates)
-        {
-            LogError("YnG.SetStateActive", "YnG.LoadLevel");
-            if (StateManager != null)
-                StateManager.SetActive(name, desactiveOtherStates);
-        }
-
-        public static void LoadLevel(string name)
-        {
-            if (StateManager != null)
-                StateManager.SetActive(name, true);
-        }
+        
 
         #endregion
 
-        #region Deprecated
+        #region Screen size and screen management
 
+        /// <summary>
+        /// Gets the width of the current viewport
+        /// </summary>
         public static int Width
         {
             get
             {
-                LogError("YnG.Width", "YnScreen.Width");
-                return YnScreen.Width;
+                if (GraphicsDeviceManager != null)
+                    return GraphicsDeviceManager.PreferredBackBufferWidth;
+
+                return Game.GraphicsDevice.Viewport.Width;
             }
         }
 
+        /// <summary>
+        /// Gets the height of the current viewport
+        /// </summary>
         public static int Height
         {
             get
             {
-                LogError("YnG.Height", "YnScreen.Height");
-                return YnScreen.Height;
+                if (GraphicsDeviceManager != null)
+                    return GraphicsDeviceManager.PreferredBackBufferHeight;
+
+                return Game.GraphicsDevice.Viewport.Height;
             }
         }
 
         /// <summary>
-        /// Gets or Set the keyboard states
+        /// Gets the rectangle that represent the screen size
         /// </summary>
-        public static YnKeyboard Keys 
-        { 
-            get 
-            {
-                LogError("YnG.Keys", "YnInput.Keys");
-                return YnInput.Keys; 
-            } 
+        public static Rectangle ScreenRectangle
+        {
+            get { return new Rectangle(0, 0, YnG.Game.GraphicsDevice.Viewport.Width, YnG.Game.GraphicsDevice.Viewport.Height); }
         }
 
         /// <summary>
-        /// Gets or Set the mouse states
+        /// Gets the center of the screen on X axis
         /// </summary>
-        public static YnMouse Mouse 
+        public static int ScreenCenterX
         {
-            get
-            {
-                LogError("YnG.Mouse", "YnInput.Mouse");
-                return YnInput.Mouse;
-            } 
+#if !ANDROID && !WINDOWS_PHONE_7 && !WINDOWS_PHONE_8
+            get { return Game.Window.ClientBounds.Width / 2; }
+#else
+			get { return YnG.Width / 2; }
+#endif
         }
 
         /// <summary>
-        /// Gets or Set the Gamepad states
+        /// Gets the center of the screen on Y axis
         /// </summary>
-        public static YnGamepad Gamepad 
+        public static int ScreenCenterY
         {
-            get
-            {
-                LogError("YnG.Gamepad", "YnInput.Gamepad");
-                return YnInput.Gamepad;
-            } 
+#if !ANDROID && !WINDOWS_PHONE_7 && !WINDOWS_PHONE_8
+            get { return Game.Window.ClientBounds.Height / 2; }
+#else
+			get { return YnG.Height / 2; }
+#endif
+        }
+
+
+        /// <summary>
+        /// Change the screen resolution
+        /// </summary>
+        /// <param name="width">Screen width</param>
+        /// <param name="height">Screen height</param>
+        public static void SetScreenResolution(int width, int height)
+        {
+            (Game as YnGame).SetScreenResolution(width, height);
         }
 
         /// <summary>
-        /// Gets or Set the Touch states
+        /// Set the screen resolution to the same resolution used on desktop
         /// </summary>
-        public static YnTouch Touch 
+        /// <param name="fullscreen"></param>
+        public static void DetermineBestResolution(bool fullscreen)
         {
-            get
-            {
-                LogError("YnG.Touch", "YnInput.Touch");
-                return YnInput.Touch;
-            }  
+            (Game as YnGame).DetermineBestResolution(true);
+        }
+
+        #endregion
+
+        #region StateManager
+
+        public static void SetStateActive(string name, bool desactiveOtherStates)
+        {
+            if (StateManager != null)
+                StateManager.SetActive(name, desactiveOtherStates);
         }
 
         #endregion
@@ -186,14 +194,6 @@ namespace Yna.Engine
         public static void Exit()
         {
             Game.Exit();
-        }
-
-        public static void LogError(string method, string replace)
-        {
-            string output = "[" + method + "] is deprecated use " + replace + " instead";
-#if !WINDOWS_STOREAPP && !WINDOWS_PHONE && !ANDROID
-            System.Console.Error.WriteLine(output);
-#endif
         }
     }
 }

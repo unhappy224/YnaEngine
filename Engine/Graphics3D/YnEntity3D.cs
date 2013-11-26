@@ -11,7 +11,7 @@ namespace Yna.Engine.Graphics3D
     /// <summary>
     /// This is a base class for all things that can be drawn on the screen
     /// </summary>
-    public abstract class YnEntity3D : GameObject
+    public abstract class YnEntity3D : YnBasicEntity
     {
         #region Protected & private declarations
 
@@ -326,7 +326,6 @@ namespace Yna.Engine.Graphics3D
             _frustrumCulled = false;
             
             _enableLight = true;
-            _sceneLayer = SceneLayer.Layer3D;
         }
 
         public YnEntity3D()

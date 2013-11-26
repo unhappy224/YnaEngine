@@ -10,7 +10,7 @@ namespace Yna.Engine
     /// <summary>
     /// Represent an updateable and drawable entity
     /// </summary>
-    public abstract class YnGameEntity : GameObject
+    public abstract class YnGameEntity : YnBasicEntity
     {
         protected bool _assetLoaded;
         protected bool _initialized;

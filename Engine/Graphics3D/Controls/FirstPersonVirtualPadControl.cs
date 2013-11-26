@@ -4,7 +4,7 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Yna.Engine.Graphics2D.Component;
+using Yna.Engine.Graphics.Component;
 using Yna.Engine.Graphics3D.Camera;
 
 namespace Yna.Engine.Graphics3D.Controls
@@ -15,12 +15,12 @@ namespace Yna.Engine.Graphics3D.Controls
     /// </summary>
     public class FirstPersonVirtualPadControl : BaseControl
     {
-        private VirtualArrowPadController _virtualPadController;
+        private YnVirtualPadController _virtualPadController;
 
         /// <summary>
         /// Gets the VirtualPad
         /// </summary>
-        public VirtualArrowPad VirtualPad
+        public YnVirtualPad VirtualPad
         {
             get { return _virtualPadController.VirtualPad; }
         }
@@ -28,7 +28,7 @@ namespace Yna.Engine.Graphics3D.Controls
         /// <summary>
         /// Gets the VirtualController used for VirtualPad
         /// </summary>
-        public VirtualArrowPadController VirtualPadController
+        public YnVirtualPadController VirtualPadController
         {
             get { return _virtualPadController; }
         }
@@ -40,7 +40,7 @@ namespace Yna.Engine.Graphics3D.Controls
         public FirstPersonVirtualPadControl(FirstPersonCamera camera)
             : base(camera, PlayerIndex.One)
         {
-            _virtualPadController = new VirtualArrowPadController();
+            _virtualPadController = new YnVirtualPadController();
             Initialize();
         }
 
@@ -49,10 +49,10 @@ namespace Yna.Engine.Graphics3D.Controls
         /// </summary>
         /// <param name="camera"></param>
         /// <param name="virtualPad"></param>
-        public FirstPersonVirtualPadControl(FirstPersonCamera camera, VirtualArrowPad virtualPad)
+        public FirstPersonVirtualPadControl(FirstPersonCamera camera, YnVirtualPad virtualPad)
             : base(camera, PlayerIndex.One)
         {
-            _virtualPadController = new VirtualArrowPadController(virtualPad);
+            _virtualPadController = new YnVirtualPadController(virtualPad);
             Initialize();
         }
 
