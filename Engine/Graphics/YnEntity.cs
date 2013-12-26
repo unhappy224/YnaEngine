@@ -15,7 +15,7 @@ namespace Yna.Engine.Graphics
     /// <summary>
     /// Define the origin of an object
     /// </summary>
-    public enum ObjectOrigin
+    public enum OriginTo
     {
         TopLeft = 0, Top, TopRight, Left, Center, Right, BottomLeft, Bottom, BottomRight
     }
@@ -726,19 +726,19 @@ namespace Yna.Engine.Graphics
         /// origin point.
         /// </summary>
         /// <param name="spriteOrigin">Determinated point of origin</param>
-        public void SetOrigin(ObjectOrigin spriteOrigin)
+        public void SetOrigin(OriginTo spriteOrigin)
         {
             switch (spriteOrigin)
             {
-                case ObjectOrigin.TopLeft: _origin = Vector2.Zero; break;
-                case ObjectOrigin.Top: _origin = new Vector2(Width / 2, 0); break;
-                case ObjectOrigin.TopRight: _origin = new Vector2(Width, 0); break;
-                case ObjectOrigin.Left: _origin = new Vector2(0, Height / 2); break;
-                case ObjectOrigin.Center: _origin = new Vector2(Width / 2, Height / 2); break;
-                case ObjectOrigin.Right: _origin = new Vector2(Width, Height / 2); break;
-                case ObjectOrigin.BottomLeft: _origin = new Vector2(0, Height); break;
-                case ObjectOrigin.Bottom: _origin = new Vector2(Width / 2, Height); break;
-                case ObjectOrigin.BottomRight: _origin = new Vector2(Width, Height); break;
+                case OriginTo.TopLeft: _origin = Vector2.Zero; break;
+                case OriginTo.Top: _origin = new Vector2(Width / 2, 0); break;
+                case OriginTo.TopRight: _origin = new Vector2(Width, 0); break;
+                case OriginTo.Left: _origin = new Vector2(0, Height / 2); break;
+                case OriginTo.Center: _origin = new Vector2(Width / 2, Height / 2); break;
+                case OriginTo.Right: _origin = new Vector2(Width, Height / 2); break;
+                case OriginTo.BottomLeft: _origin = new Vector2(0, Height); break;
+                case OriginTo.Bottom: _origin = new Vector2(Width / 2, Height); break;
+                case OriginTo.BottomRight: _origin = new Vector2(Width, Height); break;
             }
         }
 
