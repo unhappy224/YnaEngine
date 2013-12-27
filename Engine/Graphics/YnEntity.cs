@@ -719,6 +719,14 @@ namespace Yna.Engine.Graphics
             _rectangle.Y = y;
         }
 
+        public virtual void Translate(Vector2 position)
+        {
+            _position.X += position.X;
+            _position.Y += position.Y;
+            _rectangle.X = (int)_position.X;
+            _rectangle.Y = (int)_position.Y;
+        }
+
         /// <summary>
         /// Change the origin of the object. Note that when initializing the object origin
         /// with this method, the origin point will be computed once. If you change the object's

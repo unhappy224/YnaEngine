@@ -182,6 +182,8 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Graphics3D\Material\Resources\NormalMapEffect.dx11.mgfxo" />
+	<EmbeddedResource Include="Graphics\Component\Resources\gamepad_bg.png" />
+	<EmbeddedResource Include="Graphics\Component\Resources\gamepad_fg.png" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">
