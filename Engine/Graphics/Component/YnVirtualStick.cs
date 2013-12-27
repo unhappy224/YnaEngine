@@ -83,7 +83,7 @@ namespace Yna.Engine.Graphics.Component
         public YnVirtualStick(string background, string foreground)
             : this()
         {
-            _textureNames = new string[2] { background, foreground };            
+            _textureNames = new string[2] { background, foreground };
         }
 
         public override void LoadContent()
@@ -101,8 +101,8 @@ namespace Yna.Engine.Graphics.Component
 
             _rectangle.Width = (int)(_bgTexture.Width * _scale.X);
             _rectangle.Height = (int)(_bgTexture.Height * _scale.Y);
-
-            ShowAt(10, YnG.Height - _bgTexture.Height * _scale.Y - 10);
+           
+            ShowAt(_bgTexture.Width + 10, YnG.Height - (_bgTexture.Height * _scale.Y) - 10);
             _canMove = false;
         }
 
@@ -148,27 +148,24 @@ namespace Yna.Engine.Graphics.Component
                 _stickPosition.X += _tdx;
                 _stickPosition.Y += _tdy;
 
-               int sx = _position.X - _startPosition.X > 0 ? 1 : -1;
-               int sy = _position.Y - _startPosition.Y > 0 ? 1 : -1;
+                if (_stickPosition.X < X - _fgTexture.Width * _scale.X)
+                    _stickPosition.X = X - _fgTexture.Width * _scale.Y;
 
-               if (_stickPosition.X < X - _fgTexture.Width * _scale.X)
-                   _stickPosition.X = X - _fgTexture.Width * _scale.Y;
+                else if (_stickPosition.X > X + _bgTexture.Width * _scale.X)
+                    _stickPosition.X = X + _bgTexture.Width * _scale.X;
 
-               else if (_stickPosition.X > X + ScaledWidth + _fgTexture.Width * _scale.X)
-                   _stickPosition.X = X + ScaledWidth + _fgTexture.Width *_scale.X;
-                
-               if (_stickPosition.Y < Y - _fgTexture.Height * _scale.Y)
-                   _stickPosition.Y = Y - _fgTexture.Height * _scale.Y;
+                if (_stickPosition.Y < Y - _fgTexture.Height * _scale.Y)
+                    _stickPosition.Y = Y - _fgTexture.Height * _scale.Y;
 
-               else if (_stickPosition.Y > Y + ScaledHeight + _fgTexture.Height * _scale.Y)
-                   _stickPosition.Y = Y + ScaledHeight + _fgTexture.Height * _scale.Y;
+                else if (_stickPosition.Y > Y + _bgTexture.Height * _scale.Y)
+                    _stickPosition.Y = Y + _bgTexture.Height * _scale.Y;
 
-               _delta.X = round((_stickPosition.X - _startPosition.X) / ScaledWidth);
-               _delta.Y = round((_stickPosition.Y - _startPosition.Y) / ScaledHeight);
-       
-               _delta.X = ((Math.Abs(_delta.X) < _deadZone) ? 0.0f : _delta.X) * _sensitivity.X;
-               _delta.Y = ((Math.Abs(_delta.Y) < _deadZone) ? 0.0f : _delta.Y) * _sensitivity.Y;
-      
+                _delta.X = round((_stickPosition.X - _startPosition.X) / _bgTexture.Width * _scale.X);
+                _delta.Y = round((_stickPosition.Y - _startPosition.Y) / _bgTexture.Height * _scale.Y);
+
+                _delta.X = ((Math.Abs(_delta.X) < _deadZone) ? 0.0f : _delta.X) * _sensitivity.X;
+                _delta.Y = ((Math.Abs(_delta.Y) < _deadZone) ? 0.0f : _delta.Y) * _sensitivity.Y;
+
                 _mustCenter = true;
             }
             else if (_mustCenter)
