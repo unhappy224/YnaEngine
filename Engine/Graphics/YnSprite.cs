@@ -34,7 +34,7 @@ namespace Yna.Engine.Graphics
         protected Vector2 _position;
         protected Vector2 _screenPosition;
         protected Rectangle _bounds;
-        private Rectangle _screenBounds;
+        private Rectangle _cacheScreenBounds;
         protected Vector2 _distance;
         protected Vector2 _direction;
         protected Vector2 _lastPosition;
@@ -797,6 +797,60 @@ namespace Yna.Engine.Graphics
 
         #endregion
 
+        #region Event detection
+
+        protected virtual void UpdateMouseEvents()
+        {
+            // We check if the mouse events only if an event handler exists for one of mouse events
+            if (_nbMouseEventObservers > 0)
+            {
+                if (_cacheScreenBounds.Contains(YnG.Mouse.X, YnG.Mouse.Y))
+                {
+                    _hovered = true;
+                    // Mouse Over
+                    MouseOverSprite(new MouseOverEntityEventArgs(YnG.Mouse.X, YnG.Mouse.Y));
+
+                    // Just clicked
+                    if (YnG.Mouse.JustClicked(MouseButton.Left) || YnG.Mouse.JustClicked(MouseButton.Middle) || YnG.Mouse.JustClicked(MouseButton.Right))
+                    {
+                        _clicked = true;
+                        MouseButton mouseButton = MouseButton.Right;
+
+                        if (YnG.Mouse.JustClicked(MouseButton.Left))
+                            mouseButton = MouseButton.Left;
+                        else if (YnG.Mouse.JustClicked(MouseButton.Middle))
+                            mouseButton = MouseButton.Middle;
+
+                        MouseJustClickedSprite(new MouseClickEntityEventArgs(YnG.Mouse.X, YnG.Mouse.Y, mouseButton, true, false));
+                    }
+
+                    // One click
+                    else if (YnG.Mouse.ClickOn(MouseButton.Left, ButtonState.Pressed) || YnG.Mouse.ClickOn(MouseButton.Middle, ButtonState.Pressed) || YnG.Mouse.ClickOn(MouseButton.Right, ButtonState.Pressed))
+                    {
+                        MouseButton mouseButton = MouseButton.Right;
+
+                        if (YnG.Mouse.ClickOn(MouseButton.Left, ButtonState.Pressed))
+                            mouseButton = MouseButton.Left;
+                        else if (YnG.Mouse.ClickOn(MouseButton.Middle, ButtonState.Pressed))
+                            mouseButton = MouseButton.Middle;
+
+                        MouseClickSprite(new MouseClickEntityEventArgs(YnG.Mouse.X, YnG.Mouse.Y, mouseButton, false, false));
+                    }
+                    else
+                        MouseReleaseSprite(new MouseReleaseEntityEventArgs(YnG.Mouse.X, YnG.Mouse.Y));
+                }
+
+                // Mouse leave
+                else if (Bounds.Contains(YnG.Mouse.LastMouseState.X, YnG.Mouse.LastMouseState.Y))
+                    MouseLeaveSprite(new MouseLeaveEntityEventArgs(YnG.Mouse.LastMouseState.X, YnG.Mouse.LastMouseState.Y, YnG.Mouse.X, YnG.Mouse.Y));
+
+                else
+                    MouseReleaseSprite(new MouseReleaseEntityEventArgs(YnG.Mouse.X, YnG.Mouse.Y));
+            }
+        }
+
+        #endregion
+
         #region GameState pattern
 
         public override void Initialize()
@@ -850,85 +904,24 @@ namespace Yna.Engine.Graphics
 
         public override void Update(GameTime gameTime)
         {
-
-            GetScreenPosition();
-            _bounds.X = (int)_position.X;
-            _bounds.Y = (int)_position.Y;
-
             // Reset flags
             _clicked = false;
             _hovered = false;
 
+            GetScreenPosition();
 
-            _bounds.X = (int)(ScreenPosition.X - _origin.X);
-            _bounds.Y = (int)(ScreenPosition.Y - _origin.Y);
+            _cacheScreenBounds.X = (int)(ScreenPosition.X - _origin.X);
+            _cacheScreenBounds.Y = (int)(ScreenPosition.Y - _origin.Y);
+            _cacheScreenBounds.Width = (int)(_bounds.Width * _scale.X);
+            _cacheScreenBounds.Height = (int)(_bounds.Height * _scale.Y);
 
-            _screenBounds.X = (int)(ScreenPosition.X - _origin.X);
-            _screenBounds.Y = (int)(ScreenPosition.Y - _origin.Y);
-            _screenBounds.Width = (int)(_bounds.Width * _scale.X);
-            _screenBounds.Height = (int)(_bounds.Height * _scale.Y);
-
-
-            // We check if the mouse events only if an event handler exists for one of mouse events
-            if (_nbMouseEventObservers > 0)
-            {
-                if (_screenBounds.Contains(YnG.Mouse.X, YnG.Mouse.Y))
-                {
-                    _hovered = true;
-                    // Mouse Over
-                    MouseOverSprite(new MouseOverEntityEventArgs(YnG.Mouse.X, YnG.Mouse.Y));
-
-                    // Just clicked
-                    if (YnG.Mouse.JustClicked(MouseButton.Left) || YnG.Mouse.JustClicked(MouseButton.Middle) || YnG.Mouse.JustClicked(MouseButton.Right))
-                    {
-                        _clicked = true;
-                        MouseButton mouseButton;
-
-                        if (YnG.Mouse.JustClicked(MouseButton.Left))
-                            mouseButton = MouseButton.Left;
-                        else if (YnG.Mouse.JustClicked(MouseButton.Middle))
-                            mouseButton = MouseButton.Middle;
-                        else
-                            mouseButton = MouseButton.Right;
-
-                        MouseJustClickedSprite(new MouseClickEntityEventArgs(YnG.Mouse.X, YnG.Mouse.Y, mouseButton, true, false));
-                    }
-
-                    // One click
-                    else if (YnG.Mouse.ClickOn(MouseButton.Left, ButtonState.Pressed) || YnG.Mouse.ClickOn(MouseButton.Middle, ButtonState.Pressed) || YnG.Mouse.ClickOn(MouseButton.Right, ButtonState.Pressed))
-                    {
-                        MouseButton mouseButton;
-
-                        if (YnG.Mouse.ClickOn(MouseButton.Left, ButtonState.Pressed))
-                            mouseButton = MouseButton.Left;
-                        else if (YnG.Mouse.ClickOn(MouseButton.Middle, ButtonState.Pressed))
-                            mouseButton = MouseButton.Middle;
-                        else
-                            mouseButton = MouseButton.Right;
-
-                        MouseClickSprite(new MouseClickEntityEventArgs(YnG.Mouse.X, YnG.Mouse.Y, mouseButton, false, false));
-                    }
-                    else
-                    {
-                        MouseReleaseSprite(new MouseReleaseEntityEventArgs(YnG.Mouse.X, YnG.Mouse.Y));
-                    }
-                }
-                // Mouse leave
-                else if (Bounds.Contains(YnG.Mouse.LastMouseState.X, YnG.Mouse.LastMouseState.Y))
-                {
-                    MouseLeaveSprite(new MouseLeaveEntityEventArgs(YnG.Mouse.LastMouseState.X, YnG.Mouse.LastMouseState.Y, YnG.Mouse.X, YnG.Mouse.Y));
-                }
-                else
-                {
-                    MouseReleaseSprite(new MouseReleaseEntityEventArgs(YnG.Mouse.X, YnG.Mouse.Y));
-                }
-            }
-
-
+            // Update last position/direction
             _lastPosition.X = _position.X;
             _lastPosition.Y = _position.Y;
             _lastDistance.X = _distance.X;
             _lastDistance.Y = _distance.Y;
+
+            UpdateMouseEvents();
 
             for (int i = 0, l = _components.Count; i < l; i++)
             {
@@ -945,14 +938,14 @@ namespace Yna.Engine.Graphics
         /// <param name="gameTime"></param>
         public virtual void PostUpdate(GameTime gameTime)
         {
+            _bounds.X = (int)_position.X;
+            _bounds.Y = (int)_position.Y;
+
             // Update the direction
             _distance.X = _position.X - _lastPosition.X;
             _distance.Y = _position.Y - _lastPosition.Y;
             _direction.X = _distance.X;
             _direction.Y = _distance.Y;
-
-            _bounds.X = (int)_position.X;
-            _bounds.Y = (int)_position.Y;
 
             if (_direction.X != 0 && _direction.Y != 0)
                 _direction.Normalize();
