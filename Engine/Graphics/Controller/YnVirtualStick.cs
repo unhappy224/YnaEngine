@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using Yna.Engine.Input;
+using Yna.Engine.Resources;
 
 namespace Yna.Engine.Graphics.Controller
 {
@@ -95,27 +96,15 @@ namespace Yna.Engine.Graphics.Controller
             }
             else
             {
-                _bgTexture = LoadFromResources("gamepad_bg.png");
-                _fgTexture = LoadFromResources("gamepad_fg.png");
+                _bgTexture = ResourceHelper.LoadTexture("gamepad_bg.png");
+                _fgTexture = ResourceHelper.LoadTexture("gamepad_fg.png");
             }
 
-            _rectangle.Width = (int)(_bgTexture.Width * _scale.X);
-            _rectangle.Height = (int)(_bgTexture.Height * _scale.Y);
+            _bounds.Width = (int)(_bgTexture.Width * _scale.X);
+            _bounds.Height = (int)(_bgTexture.Height * _scale.Y);
            
             ShowAt(_bgTexture.Width + 10, YnG.Height - (_bgTexture.Height * _scale.Y) - 10);
             _canMove = false;
-        }
-
-        private Texture2D LoadFromResources(string asset)
-        {
-#if WINDOWS_STOREAPP
-            var assembly = typeof(YnVirtualStick).GetTypeInfo().Assembly;
-#else
-            var assembly = Assembly.GetExecutingAssembly();
-#endif
-            var stream = assembly.GetManifestResourceStream("Yna.Engine.Graphics.Controller.Resources." + asset);
-
-            return Texture2D.FromStream(YnG.GraphicsDevice, stream);
         }
 
         public override void Update(GameTime gameTime)

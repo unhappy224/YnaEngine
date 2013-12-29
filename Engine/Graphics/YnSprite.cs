@@ -13,8 +13,6 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Yna.Engine.Graphics
 {
-
-
     /// <summary>
     /// Define the origin of an object
     /// </summary>
@@ -23,22 +21,27 @@ namespace Yna.Engine.Graphics
         TopLeft = 0, Top, TopRight, Left, Center, Right, BottomLeft, Bottom, BottomRight
     }
 
-
-
     public class YnSprite : YnGameEntity, ICollidable2
     {
-        protected bool _dirty;
-
-        // Sprite position and rectangle
-        protected Vector2 _position;
-        protected Vector2 _screenPosition;
-        protected Rectangle _rectangle;
+        #region Protected declarations
 
         // Texture
         protected Texture2D _texture;
         protected string _assetName;
+        protected bool _dirty;
+
+        // Sprite position, direction and bounds
+        protected Vector2 _position;
+        protected Vector2 _screenPosition;
+        protected Rectangle _bounds;
+        private Rectangle _screenBounds;
+        protected Vector2 _distance;
+        protected Vector2 _direction;
+        protected Vector2 _lastPosition;
+        protected Vector2 _lastDistance;
 
         // Draw params
+        protected Rectangle? _sourceRectangle;
         protected Color _color;
         protected float _rotation;
         protected Vector2 _origin;
@@ -50,23 +53,15 @@ namespace Yna.Engine.Graphics
         // Define the position of the sprite relative to its parent
         protected YnSprite _parent;
         protected int _nbMouseEventObservers;
-
-        private Rectangle _testEventRectangle;
         protected bool _clicked;
         protected bool _hovered;
 
-        // Moving the sprite
-        protected Vector2 _distance;
-        protected Vector2 _direction;
-        protected Vector2 _lastPosition;
-        protected Vector2 _lastDistance;
-
-        // Position
-        protected Rectangle? _sourceRectangle;
-
-        // Animations
+        // Components
         protected List<SpriteComponent> _components;
 
+        #endregion
+
+        #region Fields
 
         /// <summary>
         /// Flags who determine if this object must be cleaned and removed
@@ -79,6 +74,32 @@ namespace Yna.Engine.Graphics
                 _dirty = value;
                 _enabled = !value;
                 _visible = !value;
+            }
+        }
+
+
+        /// <summary>
+        /// Gets or sets the Texture2D used by the object
+        /// </summary>
+        public Texture2D Texture
+        {
+            get { return _texture; }
+            set { _texture = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the texture name used when the content is loaded
+        /// </summary>
+        public string AssetName
+        {
+            get { return _assetName; }
+            set
+            {
+                if (_assetName != value)
+                {
+                    _assetLoaded = false;
+                    _assetName = value;
+                }
             }
         }
 
@@ -98,11 +119,13 @@ namespace Yna.Engine.Graphics
             get { return _clicked; }
         }
 
+        /// <summary>
+        /// Gets the absolute screen position
+        /// </summary>
         public Vector2 ScreenPosition
         {
             get { return _screenPosition; }
         }
-
 
         /// <summary>
         /// Gets or sets the parent object of this object (null if don't have a parent)
@@ -123,7 +146,7 @@ namespace Yna.Engine.Graphics
             set
             {
                 _position.X = value;
-                _rectangle.X = (int)value;
+                _bounds.X = (int)value;
             }
         }
 
@@ -137,7 +160,7 @@ namespace Yna.Engine.Graphics
             set
             {
                 _position.Y = value;
-                _rectangle.Y = (int)value;
+                _bounds.Y = (int)value;
             }
         }
 
@@ -147,13 +170,13 @@ namespace Yna.Engine.Graphics
         /// </summary>
         public int Height
         {
-            get { return _rectangle.Height; }
+            get { return _bounds.Height; }
             set
             {
                 if (_texture != null)
                     _scale.Y = (float)((float)value / (float)_texture.Height);
 
-                _rectangle.Height = value;
+                _bounds.Height = value;
             }
         }
 
@@ -163,13 +186,13 @@ namespace Yna.Engine.Graphics
         /// </summary>
         public int Width
         {
-            get { return _rectangle.Width; }
+            get { return _bounds.Width; }
             set
             {
                 if (_texture != null)
                     _scale.X = (float)((float)value / (float)_texture.Width);
 
-                _rectangle.Width = value;
+                _bounds.Width = value;
             }
         }
 
@@ -184,8 +207,8 @@ namespace Yna.Engine.Graphics
             {
                 _position.X = value.X;
                 _position.Y = value.Y;
-                _rectangle.X = (int)value.X;
-                _rectangle.Y = (int)value.Y;
+                _bounds.X = (int)value.X;
+                _bounds.Y = (int)value.Y;
             }
         }
 
@@ -193,21 +216,24 @@ namespace Yna.Engine.Graphics
         /// Gets or sets the Rectangle (Bounding box) of the object
         /// Note: The position values are updated
         /// </summary>
-        public Rectangle Rectangle
+        public Rectangle Bounds
         {
-            get { return _rectangle; }
+            get { return _bounds; }
             set
-            {/*
-                if (_texture != null)
-                {
-                    _scale.X = (float)((float)value.Width / (float)_texture.Width);
-                    _scale.Y = (float)((float)value.Height / (float)_texture.Height);
-                }*/
-
-                _rectangle = value;
+            {
+                _bounds = value;
                 _position.X = value.X;
                 _position.Y = value.Y;
             }
+        }
+
+        /// <summary>
+        /// Gets or sets the Source rectangle
+        /// </summary>
+        public Rectangle? SourceRectangle
+        {
+            get { return _sourceRectangle; }
+            set { _sourceRectangle = value; }
         }
 
         /// <summary>
@@ -231,14 +257,13 @@ namespace Yna.Engine.Graphics
 
         public float ScaledWidth
         {
-            get { return _rectangle.Width * _scale.X; }
+            get { return _bounds.Width * _scale.X; }
         }
 
         public float ScaledHeight
         {
-            get { return _rectangle.Height * _scale.Y; }
+            get { return _bounds.Height * _scale.Y; }
         }
-
 
         /// <summary>
         /// Gets or sets the origin of the object. Default is Vector2.Zero
@@ -322,40 +347,9 @@ namespace Yna.Engine.Graphics
             get { return _lastDistance; }
         }
 
-        /// <summary>
-        /// Gets or sets the Source rectangle
-        /// </summary>
-        public Rectangle? SourceRectangle
-        {
-            get { return _sourceRectangle; }
-            set { _sourceRectangle = value; }
-        }
+        #endregion
 
-        /// <summary>
-        /// Gets or sets the Texture2D used by the object
-        /// </summary>
-        public Texture2D Texture
-        {
-            get { return _texture; }
-            set { _texture = value; }
-        }
-
-        /// <summary>
-        /// Gets or sets the texture name used when the content is loaded
-        /// </summary>
-        public string AssetName
-        {
-            get { return _assetName; }
-            set
-            {
-                if (_assetName != value)
-                {
-                    _assetLoaded = false;
-                    _assetName = value;
-                }
-            }
-        }
-
+        #region Events for life cycle and input
 
         /// <summary>
         /// Triggered when the object was killed
@@ -378,7 +372,6 @@ namespace Yna.Engine.Graphics
             if (Revived != null)
                 Revived(this, e);
         }
-
 
         // Mouse events
         private event EventHandler<MouseOverEntityEventArgs> _mouseOver = null;
@@ -502,6 +495,9 @@ namespace Yna.Engine.Graphics
                 _mouseRelease(this, e);
         }
 
+        #endregion
+
+        #region Constructors
 
         /// <summary>
         /// Create a sprite with default values
@@ -511,7 +507,8 @@ namespace Yna.Engine.Graphics
         {
             _dirty = false;
             _position = Vector2.Zero;
-            _rectangle = Rectangle.Empty;
+            _bounds = Rectangle.Empty;
+            _sourceRectangle = null;
             _texture = null;
             _assetName = String.Empty;
             _assetLoaded = false;
@@ -524,22 +521,11 @@ namespace Yna.Engine.Graphics
             _layerDepth = 1.0f;
             _parent = null;
             _nbMouseEventObservers = 0;
-
-            _sourceRectangle = null;
-
             _distance = Vector2.One;
             _direction = Vector2.Zero;
             _lastPosition = Vector2.Zero;
             _lastDistance = Vector2.Zero;
-
             _components = new List<SpriteComponent>();
-        }
-
-        private YnSprite(Vector2 position)
-            : this()
-        {
-            _position = position;
-            _lastPosition = _position;
         }
 
         /// <summary>
@@ -547,18 +533,7 @@ namespace Yna.Engine.Graphics
         /// </summary>
         /// <param name="assetName">Image name that will loaded from the content manager</param>
         public YnSprite(string assetName)
-            : this(Vector2.Zero)
-        {
-            _assetName = assetName;
-        }
-
-        /// <summary>
-        /// Create a sprite
-        /// </summary>
-        /// <param name="position">Position of the sprite</param>
-        /// <param name="assetName">Image name that will loaded from the content manager</param>
-        public YnSprite(Vector2 position, string assetName)
-            : this(position)
+            : this()
         {
             _assetName = assetName;
         }
@@ -571,23 +546,55 @@ namespace Yna.Engine.Graphics
         public YnSprite(Rectangle rectangle, Color color)
             : this()
         {
-            Rectangle = rectangle;
+            Bounds = rectangle;
             _texture = YnGraphics.CreateTexture(color, rectangle.Width, rectangle.Height);
             _assetLoaded = true;
             _position = new Vector2(rectangle.X, rectangle.Y);
-            _rectangle = rectangle;
+            _bounds = rectangle;
         }
 
+        public YnSprite(Texture2D texture)
+            : this()
+        {
+            _texture = texture;
 
+            if (_texture != null)
+            {
+                _bounds.Width = texture.Width;
+                _bounds.Height = texture.Height;
+                _assetLoaded = true;
+            }
+        }
+
+        #endregion
+
+        #region Components management
+
+        /// <summary>
+        /// Add a new component. Note that you can just add one component of each type.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns>Return the added component.</returns>
         public T AddComponent<T>() where T : SpriteComponent, new()
         {
-            T component = new T();
-            component.Sprite = this;
-            component.Initialize();
-            _components.Add(component);
+            T component = GetComponent<T>();
+
+            if (component == null)
+            {
+                component = new T();
+                component.Sprite = this;
+                component.Initialize();
+                _components.Add(component);
+            }
+            
             return component;
         }
 
+        /// <summary>
+        /// Gets a component by its type.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns>Return the component if exits, otherwise return null.</returns>
         public T GetComponent<T>() where T : SpriteComponent
         {
             SpriteComponent result = null;
@@ -604,20 +611,161 @@ namespace Yna.Engine.Graphics
             return (T)result;
         }
 
-        private void ComputeScreenPosition()
+        /// <summary>
+        /// Remove a component
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns>Return the removed component if exits, otherwise return null.</returns>
+        public T RemoveComponent<T>() where T : SpriteComponent
         {
-            if (_parent != null)
+            SpriteComponent result = null;
+
+            int size = _components.Count;
+            int i = 0;
+
+            while (i < size && result == null)
             {
-                // Relative position to it's parent
-                _screenPosition = Position + _parent.ScreenPosition;
+                if (_components[i] is T)
+                {
+                    result = _components[i] as T;
+                    _components.Remove(result);
+                }
+                i++;
             }
-            else
+
+            return (T)result;
+        }
+
+        #endregion
+
+        #region Transform methods
+
+        /// <summary>
+        /// Ease the positionning. Sets the position of the entity.
+        /// </summary>
+        /// <param name="x">Position on X axis.</param>
+        /// <param name="y">Position on Y axis.</param>
+        public virtual void Move(float x, float y)
+        {
+            _position.X = x;
+            _position.Y = y;
+            _bounds.X = (int)x;
+            _bounds.Y = (int)y;
+        }
+
+        public virtual void Move(ref Vector2 position)
+        {
+            Move(position.X, position.Y);
+        }
+
+        public virtual void Move(Vector2 position)
+        {
+            Move(ref position);
+        }
+
+        public virtual void Translate(Vector2 position)
+        {
+            Translate(ref position);
+        }
+
+        public virtual void Translate(ref Vector2 position)
+        {
+            Translate(position.X, position.Y);
+        }
+
+        public virtual void Translate(float x, float y)
+        {
+            _position.X += x;
+            _position.Y += y;
+            _bounds.X += (int)x;
+            _bounds.Y += (int)y;
+        }
+
+        /// <summary>
+        /// Sets the size of the bouding rectangle.
+        /// </summary>
+        /// <param name="width">Desired width.</param>
+        /// <param name="height">Desired height</param>
+        public virtual void SetSize(float width, float height, bool updateScale)
+        {
+            _bounds.Width = (int)width;
+            _bounds.Height = (int)height;
+
+            if (updateScale && _texture != null)
             {
-                // Absolute position
-                _screenPosition = Position;
+                _scale.X = (float)((float)width / (float)_texture.Width);
+                _scale.Y = (float)((float)height / (float)_texture.Height);
             }
         }
 
+        public virtual void SetSize(float width, float height)
+        {
+            SetSize(width, height, true);
+        }
+
+
+        public Vector2 GetScreenPosition()
+        {
+            _screenPosition = Position;
+
+            // Relative position to it's parent
+            if (_parent != null)
+                _screenPosition += _parent.ScreenPosition;
+
+            return _screenPosition;
+        }
+
+        #endregion
+
+        #region Methods for changing origin and size
+
+        /// <summary>
+        /// Change the origin of the object. Note that when initializing the object origin
+        /// with this method, the origin point will be computed once. If you change the object's
+        /// bounds afterwards, old origin will be kept as is and may not reflect the initially wanted 
+        /// origin point.
+        /// </summary>
+        /// <param name="spriteOrigin">Determinated point of origin</param>
+        public void SetOrigin(SpriteOrigin spriteOrigin)
+        {
+            switch (spriteOrigin)
+            {
+                case SpriteOrigin.TopLeft: _origin = Vector2.Zero; break;
+                case SpriteOrigin.Top: _origin = new Vector2(ScaledWidth / 2, 0); break;
+                case SpriteOrigin.TopRight: _origin = new Vector2(ScaledWidth, 0); break;
+                case SpriteOrigin.Left: _origin = new Vector2(0, ScaledHeight / 2); break;
+                case SpriteOrigin.Center: _origin = new Vector2(ScaledWidth / 2, ScaledHeight / 2); break;
+                case SpriteOrigin.Right: _origin = new Vector2(ScaledWidth, ScaledHeight / 2); break;
+                case SpriteOrigin.BottomLeft: _origin = new Vector2(0, ScaledHeight); break;
+                case SpriteOrigin.Bottom: _origin = new Vector2(ScaledWidth / 2, ScaledHeight); break;
+                case SpriteOrigin.BottomRight: _origin = new Vector2(ScaledWidth, ScaledHeight); break;
+            }
+        }
+
+        public void SetOrigin(Vector2 origin)
+        {
+            _origin = origin;
+        }
+
+        public void SetOrigin(ref Vector2 origin)
+        {
+            _origin = origin;
+        }
+
+        /// <summary>
+        /// Adapt the scale of the entity for taking fullscreen
+        /// </summary>
+        public void SetFullScreen()
+        {
+            _position = Vector2.Zero;
+            _bounds.X = 0;
+            _bounds.Y = 0;
+            SetSize(YnG.Width, YnG.Height);
+        }
+
+        #endregion
+
+        #region Life cycle
 
         /// <summary>
         /// Flag the object for a purge action
@@ -647,85 +795,9 @@ namespace Yna.Engine.Graphics
             ReviveSprite(EventArgs.Empty);
         }
 
+        #endregion
 
-        /// <summary>
-        /// Ease the positionning. Sets the position of the entity.
-        /// </summary>
-        /// <param name="x">Position on X axis.</param>
-        /// <param name="y">Position on Y axis.</param>
-        public virtual void Move(float x, float y)
-        {
-            _position.X = x;
-            _position.Y = y;
-            _rectangle.X = (int)x;
-            _rectangle.Y = (int)y;
-        }
-
-        public virtual void Move(ref Vector2 position)
-        {
-            Move(position.X, position.Y);
-        }
-
-        public virtual void Move(Vector2 position)
-        {
-            Move(ref position);
-        }
-
-        public virtual void Translate(Vector2 position)
-        {
-            Translate(ref position);
-        }
-
-        public virtual void Translate(ref Vector2 position)
-        {
-            Translate(position.X, position.Y);
-        }
-
-        public virtual void Translate(float x, float y)
-        {
-            _position.X += x;
-            _position.Y += y;
-            _rectangle.X += (int)x;
-            _rectangle.Y += (int)y;
-        }
-
-        public virtual void SetSize(float width, float height)
-        {
-            _rectangle.Width = (int)width;
-            _rectangle.Height = (int)height;
-        }
-
-        /// <summary>
-        /// Change the origin of the object. Note that when initializing the object origin
-        /// with this method, the origin point will be computed once. If you change the object's
-        /// bounds afterwards, old origin will be kept as is and may not reflect the initially wanted 
-        /// origin point.
-        /// </summary>
-        /// <param name="spriteOrigin">Determinated point of origin</param>
-        public void SetOrigin(SpriteOrigin spriteOrigin)
-        {
-            switch (spriteOrigin)
-            {
-                case SpriteOrigin.TopLeft: _origin = Vector2.Zero; break;
-                case SpriteOrigin.Top: _origin = new Vector2(ScaledWidth / 2, 0); break;
-                case SpriteOrigin.TopRight: _origin = new Vector2(ScaledWidth, 0); break;
-                case SpriteOrigin.Left: _origin = new Vector2(0, ScaledHeight / 2); break;
-                case SpriteOrigin.Center: _origin = new Vector2(ScaledWidth / 2, ScaledHeight / 2); break;
-                case SpriteOrigin.Right: _origin = new Vector2(ScaledWidth, ScaledHeight / 2); break;
-                case SpriteOrigin.BottomLeft: _origin = new Vector2(0, ScaledHeight); break;
-                case SpriteOrigin.Bottom: _origin = new Vector2(ScaledWidth / 2, ScaledHeight); break;
-                case SpriteOrigin.BottomRight: _origin = new Vector2(ScaledWidth, ScaledHeight); break;
-            }
-        }
-
-        /// <summary>
-        /// Adapt the scale of the entity for taking fullscreen
-        /// </summary>
-        public void SetFullScreen()
-        {
-            Rectangle = new Rectangle(0, 0, YnG.Width, YnG.Height);
-        }
-
+        #region GameState pattern
 
         public override void Initialize()
         {
@@ -741,13 +813,13 @@ namespace Yna.Engine.Graphics
             if (!_assetLoaded && _assetName != String.Empty)
             {
                 _texture = YnG.Content.Load<Texture2D>(_assetName);
-                _rectangle.Width = _texture.Width;
-                _rectangle.Height = _texture.Height;
+                _bounds.Width = _texture.Width;
+                _bounds.Height = _texture.Height;
 
                 if (GetComponent<SpriteAnimator>() != null)
                 {
                     _sourceRectangle = new Rectangle(0, 0, _texture.Width, _texture.Height);
-                    _rectangle = new Rectangle((int)_position.X, (int)_position.Y, _texture.Width, _texture.Height);
+                    _bounds = new Rectangle((int)_position.X, (int)_position.Y, _texture.Width, _texture.Height);
                 }
 
                 _assetLoaded = true;
@@ -779,79 +851,79 @@ namespace Yna.Engine.Graphics
         public override void Update(GameTime gameTime)
         {
 
-            ComputeScreenPosition();
-            _rectangle.X = (int)_position.X;
-            _rectangle.Y = (int)_position.Y;
+            GetScreenPosition();
+            _bounds.X = (int)_position.X;
+            _bounds.Y = (int)_position.Y;
 
             // Reset flags
             _clicked = false;
             _hovered = false;
 
-    
-                _rectangle.X = (int)(ScreenPosition.X - _origin.X);
-                _rectangle.Y = (int)(ScreenPosition.Y - _origin.Y);
 
-                _testEventRectangle.X = (int)(ScreenPosition.X - _origin.X);
-                _testEventRectangle.Y = (int)(ScreenPosition.Y - _origin.Y);
-                _testEventRectangle.Width = (int)(_rectangle.Width * _scale.X);
-                _testEventRectangle.Height = (int)(_rectangle.Height * _scale.Y);
+            _bounds.X = (int)(ScreenPosition.X - _origin.X);
+            _bounds.Y = (int)(ScreenPosition.Y - _origin.Y);
+
+            _screenBounds.X = (int)(ScreenPosition.X - _origin.X);
+            _screenBounds.Y = (int)(ScreenPosition.Y - _origin.Y);
+            _screenBounds.Width = (int)(_bounds.Width * _scale.X);
+            _screenBounds.Height = (int)(_bounds.Height * _scale.Y);
 
 
-                // We check if the mouse events only if an event handler exists for one of mouse events
-                if (_nbMouseEventObservers > 0)
+            // We check if the mouse events only if an event handler exists for one of mouse events
+            if (_nbMouseEventObservers > 0)
+            {
+                if (_screenBounds.Contains(YnG.Mouse.X, YnG.Mouse.Y))
                 {
-                    if (_testEventRectangle.Contains(YnG.Mouse.X, YnG.Mouse.Y))
+                    _hovered = true;
+                    // Mouse Over
+                    MouseOverSprite(new MouseOverEntityEventArgs(YnG.Mouse.X, YnG.Mouse.Y));
+
+                    // Just clicked
+                    if (YnG.Mouse.JustClicked(MouseButton.Left) || YnG.Mouse.JustClicked(MouseButton.Middle) || YnG.Mouse.JustClicked(MouseButton.Right))
                     {
-                        _hovered = true;
-                        // Mouse Over
-                        MouseOverSprite(new MouseOverEntityEventArgs(YnG.Mouse.X, YnG.Mouse.Y));
+                        _clicked = true;
+                        MouseButton mouseButton;
 
-                        // Just clicked
-                        if (YnG.Mouse.JustClicked(MouseButton.Left) || YnG.Mouse.JustClicked(MouseButton.Middle) || YnG.Mouse.JustClicked(MouseButton.Right))
-                        {
-                            _clicked = true;
-                            MouseButton mouseButton;
-
-                            if (YnG.Mouse.JustClicked(MouseButton.Left))
-                                mouseButton = MouseButton.Left;
-                            else if (YnG.Mouse.JustClicked(MouseButton.Middle))
-                                mouseButton = MouseButton.Middle;
-                            else
-                                mouseButton = MouseButton.Right;
-
-                            MouseJustClickedSprite(new MouseClickEntityEventArgs(YnG.Mouse.X, YnG.Mouse.Y, mouseButton, true, false));
-                        }
-
-                        // One click
-                        else if (YnG.Mouse.ClickOn(MouseButton.Left, ButtonState.Pressed) || YnG.Mouse.ClickOn(MouseButton.Middle, ButtonState.Pressed) || YnG.Mouse.ClickOn(MouseButton.Right, ButtonState.Pressed))
-                        {
-                            MouseButton mouseButton;
-
-                            if (YnG.Mouse.ClickOn(MouseButton.Left, ButtonState.Pressed))
-                                mouseButton = MouseButton.Left;
-                            else if (YnG.Mouse.ClickOn(MouseButton.Middle, ButtonState.Pressed))
-                                mouseButton = MouseButton.Middle;
-                            else
-                                mouseButton = MouseButton.Right;
-
-                            MouseClickSprite(new MouseClickEntityEventArgs(YnG.Mouse.X, YnG.Mouse.Y, mouseButton, false, false));
-                        }
+                        if (YnG.Mouse.JustClicked(MouseButton.Left))
+                            mouseButton = MouseButton.Left;
+                        else if (YnG.Mouse.JustClicked(MouseButton.Middle))
+                            mouseButton = MouseButton.Middle;
                         else
-                        {
-                            MouseReleaseSprite(new MouseReleaseEntityEventArgs(YnG.Mouse.X, YnG.Mouse.Y));
-                        }
+                            mouseButton = MouseButton.Right;
+
+                        MouseJustClickedSprite(new MouseClickEntityEventArgs(YnG.Mouse.X, YnG.Mouse.Y, mouseButton, true, false));
                     }
-                    // Mouse leave
-                    else if (Rectangle.Contains(YnG.Mouse.LastMouseState.X, YnG.Mouse.LastMouseState.Y))
+
+                    // One click
+                    else if (YnG.Mouse.ClickOn(MouseButton.Left, ButtonState.Pressed) || YnG.Mouse.ClickOn(MouseButton.Middle, ButtonState.Pressed) || YnG.Mouse.ClickOn(MouseButton.Right, ButtonState.Pressed))
                     {
-                        MouseLeaveSprite(new MouseLeaveEntityEventArgs(YnG.Mouse.LastMouseState.X, YnG.Mouse.LastMouseState.Y, YnG.Mouse.X, YnG.Mouse.Y));
+                        MouseButton mouseButton;
+
+                        if (YnG.Mouse.ClickOn(MouseButton.Left, ButtonState.Pressed))
+                            mouseButton = MouseButton.Left;
+                        else if (YnG.Mouse.ClickOn(MouseButton.Middle, ButtonState.Pressed))
+                            mouseButton = MouseButton.Middle;
+                        else
+                            mouseButton = MouseButton.Right;
+
+                        MouseClickSprite(new MouseClickEntityEventArgs(YnG.Mouse.X, YnG.Mouse.Y, mouseButton, false, false));
                     }
                     else
                     {
                         MouseReleaseSprite(new MouseReleaseEntityEventArgs(YnG.Mouse.X, YnG.Mouse.Y));
                     }
                 }
-            
+                // Mouse leave
+                else if (Bounds.Contains(YnG.Mouse.LastMouseState.X, YnG.Mouse.LastMouseState.Y))
+                {
+                    MouseLeaveSprite(new MouseLeaveEntityEventArgs(YnG.Mouse.LastMouseState.X, YnG.Mouse.LastMouseState.Y, YnG.Mouse.X, YnG.Mouse.Y));
+                }
+                else
+                {
+                    MouseReleaseSprite(new MouseReleaseEntityEventArgs(YnG.Mouse.X, YnG.Mouse.Y));
+                }
+            }
+
 
             _lastPosition.X = _position.X;
             _lastPosition.Y = _position.Y;
@@ -879,8 +951,8 @@ namespace Yna.Engine.Graphics
             _direction.X = _distance.X;
             _direction.Y = _distance.Y;
 
-            _rectangle.X = (int)_position.X;
-            _rectangle.Y = (int)_position.Y;
+            _bounds.X = (int)_position.X;
+            _bounds.Y = (int)_position.Y;
 
             if (_direction.X != 0 && _direction.Y != 0)
                 _direction.Normalize();
@@ -900,5 +972,7 @@ namespace Yna.Engine.Graphics
             if (Visible)
                 spriteBatch.Draw(_texture, _position, _sourceRectangle, _color * _alpha, _rotation, _origin, _scale, _effects, _layerDepth);
         }
+
+        #endregion
     }
 }

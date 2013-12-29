@@ -189,7 +189,7 @@ namespace Yna.Engine.Graphics
                 _assetLoaded = true;
 
                 UpdateTextMeasure();
-                Rectangle = new Rectangle((int)X, (int)Y, (int)_tempMeasure.X, (int)_tempMeasure.Y);
+                Bounds = new Rectangle((int)X, (int)Y, (int)_tempMeasure.X, (int)_tempMeasure.Y);
             }
         }
 

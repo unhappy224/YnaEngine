@@ -17,7 +17,6 @@ namespace Yna.Engine.Graphics
         #region Private declarations
 
         protected YnGameEntityCollection _entitiesList;
-        private bool _initialized;
         private bool _assetsLoaded;
 
         #endregion
@@ -72,8 +71,8 @@ namespace Yna.Engine.Graphics
                 Vector2 rawValue = value - _position;
 
                 _position = value;
-                _rectangle.X = (int)_position.X;
-                _rectangle.Y = (int)_position.Y;
+                _bounds.X = (int)_position.X;
+                _bounds.Y = (int)_position.Y;
 
                 for (int i = 0, l = this.Count; i < l; i++)
                     this[i].Translate(ref rawValue);
@@ -84,14 +83,15 @@ namespace Yna.Engine.Graphics
         /// Gets or sets the Rectangle (Bounding box) of the group.
         /// Note: The position values are updated
         /// </summary>
-        public new Rectangle Rectangle
+        public new Rectangle Bounds
         {
-            get { return _rectangle; }
+            get { return _bounds; }
             set
             {
-                _rectangle = value;
-                Position = new Vector2(_rectangle.X, _rectangle.Y);
-                UpdateRectangle();
+                _bounds = value;
+                _position.X = value.X;
+                _position.Y = value.Y;
+                UpdateBounds();
             }
         }
 
@@ -106,12 +106,12 @@ namespace Yna.Engine.Graphics
                 float rawValue = value - _position.X;
 
                 _position.X = value;
-                _rectangle.X = (int)value;
+                _bounds.X = (int)value;
 
                 for (int i = 0, l = this.Count; i < l; i++)
                     this[i].Translate(rawValue, 0);
 
-                UpdateRectangle();
+                UpdateBounds();
             }
         }
 
@@ -126,12 +126,12 @@ namespace Yna.Engine.Graphics
                 float rawValue = value - _position.Y;
 
                 _position.Y = value;
-                _rectangle.Y = (int)value;
+                _bounds.Y = (int)value;
 
                 for (int i = 0, l = this.Count; i < l; i++)
                     this[i].Translate(0, rawValue);
 
-                UpdateRectangle();
+                UpdateBounds();
             }
         }
 
@@ -235,8 +235,8 @@ namespace Yna.Engine.Graphics
         {
             _position.X = x;
             _position.Y = y;
-            _rectangle.X = x;
-            _rectangle.Y = y;
+            _bounds.X = x;
+            _bounds.Y = y;
         }
 
         #endregion
@@ -259,7 +259,7 @@ namespace Yna.Engine.Graphics
         {
             _entitiesList.LoadContent();
             _assetsLoaded = true;
-            UpdateRectangle();
+            UpdateBounds();
         }
 
         /// <summary>
@@ -308,7 +308,7 @@ namespace Yna.Engine.Graphics
             if (_assetsLoaded)
                 sceneObject.LoadContent();
             
-            UpdateRectangle();
+            UpdateBounds();
 
             _entitiesList.Add(sceneObject);
         }
@@ -333,7 +333,7 @@ namespace Yna.Engine.Graphics
         {
             _entitiesList.Remove(sceneObject);
 
-            UpdateRectangle();
+            UpdateBounds();
         }
 
         /// <summary>
@@ -343,7 +343,7 @@ namespace Yna.Engine.Graphics
         {
             _entitiesList.Clear();
 
-            UpdateRectangle();
+            UpdateBounds();
         }
 
         public IEnumerator GetEnumerator()
@@ -372,7 +372,7 @@ namespace Yna.Engine.Graphics
         /// <summary>
         /// Update the size of the group. It's the rectangle that contains all members
         /// </summary>
-        public void UpdateRectangle()
+        public void UpdateBounds()
         {
             int width = 0;
             int height = 0;

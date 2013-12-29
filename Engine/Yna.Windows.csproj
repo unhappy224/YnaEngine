@@ -51,11 +51,12 @@
     <Compile Include="Extensions\Vector2Extension.cs" />
     <Compile Include="Extensions\ViewportExtension.cs" />
     <Compile Include="Graphics\YnScene.cs" />
+    <Compile Include="Resources\ResourceHelper.cs" />
     <Compile Include="State\StateManagerException.cs" />
     <Compile Include="YnBasicCollection.cs" />
     <Compile Include="YnGameEntityCollection.cs" />
     <Compile Include="YnGameEntity.cs" />
-    <Compile Include="Graphics\Animation\AnimationEventArgs.cs" />
+    <Compile Include="Graphics\Event\InterpolatorEventArgs.cs" />
     <Compile Include="Graphics\Controller\YnVirtualPadController.cs" />
     <Compile Include="Graphics\Particle\YnEmitter.cs" />
     <Compile Include="Graphics\Particle\YnParticle.cs" />
@@ -182,9 +183,9 @@
     <Compile Include="Script\WaitScript.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Graphics3D\Material\Resources\NormalMapEffect.dx11.mgfxo" />
-    <EmbeddedResource Include="Graphics\Controller\Resources\gamepad_bg.png" />
-    <EmbeddedResource Include="Graphics\Controller\Resources\gamepad_fg.png" />
+    <EmbeddedResource Include="Resources\Effects\NormalMapEffect.dx11.mgfxo" />
+    <EmbeddedResource Include="Resources\Controller\gamepad_bg.png" />
+    <EmbeddedResource Include="Resources\Controller\gamepad_fg.png" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">

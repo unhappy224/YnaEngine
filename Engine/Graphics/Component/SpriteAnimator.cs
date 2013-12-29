@@ -57,7 +57,7 @@ namespace Yna.Engine.Graphics.Component
             Initialize(width, height, Sprite.Texture.Width, Sprite.Texture.Height);
 
             // The sprite size is now the size of a sprite on the spritesheet
-            Sprite.Rectangle = new Rectangle((int)Sprite.X, (int)Sprite.Y, width, height);
+            Sprite.Bounds = new Rectangle((int)Sprite.X, (int)Sprite.Y, width, height);
         }
 
         /// <summary>

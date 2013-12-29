@@ -3,6 +3,7 @@
 // file 'LICENSE', which is part of this source code package.
 using System;
 using Microsoft.Xna.Framework;
+using Yna.Engine.Graphics.Event;
 
 namespace Yna.Engine.Graphics.Animation
 {
@@ -117,14 +118,14 @@ namespace Yna.Engine.Graphics.Animation
                 Started(this, e);
         }
 
-        private void OnFinished(InterpolationEndEventArgs<T> e)
+        private void OnFinished(InterpolatorEventArgs<T> e)
         {
             if (Finished != null)
                 Finished(this, e);
         }
 
 
-        private void OnRestarted(InterpolationEndEventArgs<T> e)
+        private void OnRestarted(InterpolatorEventArgs<T> e)
         {
             if (Restarted != null)
                 Restarted(this, e);
@@ -200,13 +201,13 @@ namespace Yna.Engine.Graphics.Animation
                     {
                         _active = true;
                         _elapsedTime = 0;
-                        OnRestarted(new InterpolationEndEventArgs<T>(_elapsedTime, _interpolatedValue));
+                        OnRestarted(new InterpolatorEventArgs<T>(_elapsedTime, _interpolatedValue));
                     }
                     else
                     {
                         _active = false;
                         _elapsedTime = _desiredDuration;
-                        OnFinished(new InterpolationEndEventArgs<T>(_elapsedTime, _interpolatedValue));
+                        OnFinished(new InterpolatorEventArgs<T>(_elapsedTime, _interpolatedValue));
                     }
                 }
 

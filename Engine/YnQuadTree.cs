@@ -141,7 +141,7 @@ namespace Yna.Engine
         {
             List<ICollidable2> candidates = new List<ICollidable2>();
 
-            int index = GetNodeIndex(entity.Rectangle);
+            int index = GetNodeIndex(entity.Bounds);
 
             // If the space is already splited we get node objects that can potentially collide with this entity
             if (index > -1 && _nodes[0] != null)
@@ -234,7 +234,7 @@ namespace Yna.Engine
             // If the Quadtree is already splited
             if (_nodes[0] != null)
             {
-                int index = GetNodeIndex(entity.Rectangle);
+                int index = GetNodeIndex(entity.Bounds);
 
                 if (index > -1)
                 {
@@ -254,7 +254,7 @@ namespace Yna.Engine
                 int i = 0;
                 while (i < _objects.Count)
                 {
-                    int index = GetNodeIndex(_objects[i].Rectangle);
+                    int index = GetNodeIndex(_objects[i].Bounds);
                     if (index > -1)
                     {
                         // Add the object to the correct node en remove it from the its parent

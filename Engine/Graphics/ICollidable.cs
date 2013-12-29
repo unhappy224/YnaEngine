@@ -11,7 +11,7 @@ namespace Yna.Engine.Graphics
     /// </summary>
     public interface ICollidable2
     {
-        Rectangle Rectangle { get; }
+        Rectangle Bounds { get; }
     }
 
     public interface IColladable2PerfectPixel

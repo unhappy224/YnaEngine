@@ -205,13 +205,12 @@ namespace Yna.Engine.Graphics.TileMap.Isometric
             Rectangle texRect;
             Vector2 position;
             int delta;
-            int decoDelta = 0;
+
             for (int x = 0; x < _mapWidth; x++)
             {
                 for (int y = 0; y < _mapHeight; y++)
                 {
                     tile = (TileIso)layer[x, y];
-                    decoDelta = 0;
 
                     // Negative ID represents invisible tiles and do not need to be rendered
                     if (tile.TextureID >= 0)

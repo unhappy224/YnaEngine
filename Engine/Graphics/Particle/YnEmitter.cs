@@ -12,7 +12,6 @@ namespace Yna.Engine.Graphics.Particle
     /// </summary>
     public class YnEmitter : YnSprite
     {
-        private Vector2 _direction;
         private int _maxParticles;
         private int _intensity;
         private List<YnParticle> _particles;
@@ -22,15 +21,6 @@ namespace Yna.Engine.Graphics.Particle
         private bool _repeat;
         private bool _canRestart;
         private ParticleConfiguration _particleConfiguration;
-
-        /// <summary>
-        /// Gets or sets the direction of the emitter.
-        /// </summary>
-        public Vector2 Direction
-        {
-            get { return _direction; }
-            set { _direction = value; }
-        }
 
         /// <summary>
         /// Gets or sets the maximum particles can be emitted.
