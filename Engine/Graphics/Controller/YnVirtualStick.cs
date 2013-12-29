@@ -9,7 +9,7 @@ using System.Reflection;
 using System.Text;
 using Yna.Engine.Input;
 
-namespace Yna.Engine.Graphics.Component
+namespace Yna.Engine.Graphics.Controller
 {
     public sealed class YnVirtualStick : YnGroup
     {
@@ -113,7 +113,7 @@ namespace Yna.Engine.Graphics.Component
 #else
             var assembly = Assembly.GetExecutingAssembly();
 #endif
-            var stream = assembly.GetManifestResourceStream("Yna.Engine.Graphics.Component.Resources." + asset);
+            var stream = assembly.GetManifestResourceStream("Yna.Engine.Graphics.Controller.Resources." + asset);
 
             return Texture2D.FromStream(YnG.GraphicsDevice, stream);
         }

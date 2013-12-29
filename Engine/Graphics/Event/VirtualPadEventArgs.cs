@@ -2,7 +2,7 @@
 // This file is subject to the terms and conditions defined in
 // file 'LICENSE', which is part of this source code package.
 using System;
-using Yna.Engine.Graphics.Component;
+using Yna.Engine.Graphics.Controller;
 
 namespace Yna.Engine.Graphics.Event
 {

@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 using Yna.Engine.Graphics.Event;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Yna.Engine.Graphics.Component
+namespace Yna.Engine.Graphics.Controller
 {
     /// <summary>
     /// A Virtual pad controller that create a virtual pad and manage events

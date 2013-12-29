@@ -193,12 +193,12 @@ namespace Yna.Engine.Graphics
         {
             get { return _rectangle; }
             set
-            {
+            {/*
                 if (_texture != null)
                 {
                     _scale.X = (float)((float)value.Width / (float)_texture.Width);
                     _scale.Y = (float)((float)value.Height / (float)_texture.Height);
-                }
+                }*/
 
                 _rectangle = value;
                 _position.X = value.X;

@@ -5,7 +5,7 @@ using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Yna.Engine.Graphics.Animation
+namespace Yna.Engine.Graphics.Component
 {
     /// <summary>
     /// Define a sprite animation
@@ -127,6 +127,11 @@ namespace Yna.Engine.Graphics.Animation
                 spriteEffect = SpriteEffects.FlipHorizontally;
 
             return Rectangle[Index];
+        }
+
+        public Rectangle Next(SpriteEffects spriteEffect)
+        {
+            return Next(ref spriteEffect);
         }
 
         /// <summary>
