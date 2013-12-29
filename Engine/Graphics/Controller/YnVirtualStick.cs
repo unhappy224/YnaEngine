@@ -11,7 +11,7 @@ using Yna.Engine.Input;
 
 namespace Yna.Engine.Graphics.Controller
 {
-    public sealed class YnVirtualStick : YnGroup
+    public sealed class YnVirtualStick : YnSpriteGroup
     {
         private Vector2 _startPosition;
         private Vector2 _stickPosition;

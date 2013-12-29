@@ -14,9 +14,9 @@ namespace Yna.Engine.Graphics3D
     /// <summary>
     /// A container for updating and drawing 3D object
     /// </summary>
-    public class YnGroup3D : YnEntity3D
+    public class YnGroup3D : YnSprite3D
     {
-        protected YnEntity3DList _members;
+        protected YnSprite3DList _members;
 
         #region Properties
 
@@ -34,14 +34,14 @@ namespace Yna.Engine.Graphics3D
             {
                 _world = Matrix.Identity;
 
-                foreach (YnEntity3D members in _members)
+                foreach (YnSprite3D members in _members)
                     _world *= members.World;
 
                 return _world;
             }
             set
             {
-                foreach (YnEntity3D members in _members)
+                foreach (YnSprite3D members in _members)
                     members.World *= value;
             }
         }
@@ -49,12 +49,12 @@ namespace Yna.Engine.Graphics3D
         /// <summary>
         /// Get the YnObject3D on this scene
         /// </summary>
-        public List<YnEntity3D> SceneObjects
+        public List<YnSprite3D> SceneObjects
         {
             get { return _members.Members; }
         }
 
-        public YnEntity3D this[int index]
+        public YnSprite3D this[int index]
         {
             get
             {
@@ -77,7 +77,7 @@ namespace Yna.Engine.Graphics3D
             get { return _rotation; }
             set
             {
-                foreach (YnEntity3D entity in this)
+                foreach (YnSprite3D entity in this)
                     entity.Rotation += value;
                 _rotation = value;
             }
@@ -88,7 +88,7 @@ namespace Yna.Engine.Graphics3D
             get { return _position; }
             set
             {
-                foreach (YnEntity3D entity in this)
+                foreach (YnSprite3D entity in this)
                     entity.Position += value;
                 _position = value;
             }
@@ -99,7 +99,7 @@ namespace Yna.Engine.Graphics3D
             get { return _scale; }
             set
             {
-                foreach (YnEntity3D entity in this)
+                foreach (YnSprite3D entity in this)
                     entity.Scale += value;
                 _scale = value;
             }
@@ -107,9 +107,9 @@ namespace Yna.Engine.Graphics3D
 
         #endregion
 
-        public YnGroup3D(YnEntity3D parent)
+        public YnGroup3D(YnSprite3D parent)
         {
-            _members = new YnEntity3DList();
+            _members = new YnSprite3DList();
             _initialized = false;
             _parent = parent;
         }
@@ -128,7 +128,7 @@ namespace Yna.Engine.Graphics3D
             {
                 if (_members.Count > 0)
                 {
-                    foreach (YnEntity3D sceneObject in _members)
+                    foreach (YnSprite3D sceneObject in _members)
                     {
                         BoundingBox box = sceneObject.BoundingBox;
 
@@ -153,7 +153,7 @@ namespace Yna.Engine.Graphics3D
 
             World = Matrix.Identity;
 
-            foreach (YnEntity3D members in _members)
+            foreach (YnSprite3D members in _members)
                 World *= members.World;
         }
 
@@ -164,7 +164,7 @@ namespace Yna.Engine.Graphics3D
         {
             World = Matrix.Identity;
 
-            foreach (YnEntity3D members in _members)
+            foreach (YnSprite3D members in _members)
                 World *= members.World;
         }
 
@@ -174,7 +174,7 @@ namespace Yna.Engine.Graphics3D
         /// <param name="light">Light to use.</param>
         public override void UpdateLighting(SceneLight light)
         {
-            foreach (YnEntity3D entity3D in _members)
+            foreach (YnSprite3D entity3D in _members)
                 entity3D.UpdateLighting(light);
         }
 
@@ -247,7 +247,7 @@ namespace Yna.Engine.Graphics3D
         /// Add an object to the group, the camera used for this group will be used for this object
         /// </summary>
         /// <param name="sceneObject">An object3D</param>
-        public virtual bool Add(YnEntity3D sceneObject)
+        public virtual bool Add(YnSprite3D sceneObject)
         {
             if (sceneObject is YnScene3D)
                 throw new Exception("[YnGroup3D] You can't add a scene on a group, use an YnGroup3D instead");
@@ -270,7 +270,7 @@ namespace Yna.Engine.Graphics3D
         /// Remove an object of the group
         /// </summary>
         /// <param name="sceneObject"></param>
-        public virtual bool Remove(YnEntity3D sceneObject)
+        public virtual bool Remove(YnSprite3D sceneObject)
         {
             return _members.Remove(sceneObject);
         }
@@ -285,7 +285,7 @@ namespace Yna.Engine.Graphics3D
 
         public IEnumerator GetEnumerator()
         {
-            foreach (YnEntity3D member in _members)
+            foreach (YnSprite3D member in _members)
                 yield return member;
         }
 

@@ -7,12 +7,12 @@ namespace Yna.Engine.Graphics3D.Camera
 {
     public class ThirdPersonCamera : BaseCamera
     {
-        private YnEntity3D _followedObject;
+        private YnSprite3D _followedObject;
 
         /// <summary>
         /// Gets or sets the objects followed by the camera.
         /// </summary>
-        public YnEntity3D FollowedObject
+        public YnSprite3D FollowedObject
         {
             get { return _followedObject; }
             set { _followedObject = value; }
@@ -45,7 +45,7 @@ namespace Yna.Engine.Graphics3D.Camera
         /// Create a third person camera with an entity3D and default values
         /// </summary>
         /// <param name="entity3D">The object to follow.</param>
-        public ThirdPersonCamera(YnEntity3D entity3D)
+        public ThirdPersonCamera(YnSprite3D entity3D)
             : this(entity3D, new Vector3(0, 10, 80))
         {
 
@@ -56,7 +56,7 @@ namespace Yna.Engine.Graphics3D.Camera
         /// </summary>
         /// <param name="entity3D">The object to follow</param>
         /// <param name="reference">Initial reference.</param>
-        public ThirdPersonCamera(YnEntity3D entity3D, Vector3 reference)
+        public ThirdPersonCamera(YnSprite3D entity3D, Vector3 reference)
         {
             _reference = reference;
             _followedObject = entity3D;

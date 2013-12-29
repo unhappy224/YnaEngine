@@ -179,7 +179,7 @@ namespace Yna.Engine.Graphics3D
         /// Add an object3D on the scene
         /// </summary>
         /// <param name="object3D">An object3D</param>
-        public bool Add(YnEntity3D object3D)
+        public bool Add(YnSprite3D object3D)
         {
             return _scene.Add(object3D);
         }
@@ -209,7 +209,7 @@ namespace Yna.Engine.Graphics3D
         /// Remove an object3D of the scene
         /// </summary>
         /// <param name="object3D">Object3D to remove.</param>
-        public bool Remove(YnEntity3D object3D)
+        public bool Remove(YnSprite3D object3D)
         {
             return _scene.Remove(object3D);
         }

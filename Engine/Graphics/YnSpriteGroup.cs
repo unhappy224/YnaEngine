@@ -12,7 +12,7 @@ namespace Yna.Engine.Graphics
     /// <summary>
     /// A container of scene object who work as a collection
     /// </summary>
-    public class YnGroup : YnEntity
+    public class YnSpriteGroup : YnSprite
     {
         #region Private declarations
 
@@ -206,9 +206,9 @@ namespace Yna.Engine.Graphics
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        public YnEntity this[int index]
+        public YnSprite this[int index]
         {
-            get { return _entitiesList[index] as YnEntity; }
+            get { return _entitiesList[index] as YnSprite; }
             set { _entitiesList[index] = value; }
         }
 
@@ -216,13 +216,13 @@ namespace Yna.Engine.Graphics
 
         #region Constructors
 
-        public YnGroup()
+        public YnSpriteGroup()
             : this(0)
         {
 
         }
 
-        public YnGroup(int capacity)
+        public YnSpriteGroup(int capacity)
         {
             _entitiesList = new YnGameEntityCollection();
             _initialized = false;
@@ -230,7 +230,7 @@ namespace Yna.Engine.Graphics
             _entitiesList.SecureCycle = true;
         }
 
-        public YnGroup(int capacity, int x, int y)
+        public YnSpriteGroup(int capacity, int x, int y)
             : this(capacity)
         {
             _position.X = x;
@@ -298,7 +298,7 @@ namespace Yna.Engine.Graphics
         /// Add a new object in the collecion
         /// </summary>
         /// <param name="sceneObject">An object or derivated from YnObject</param>
-        public void Add(YnEntity sceneObject)
+        public void Add(YnSprite sceneObject)
         {
             sceneObject.Parent = this;
 
@@ -317,7 +317,7 @@ namespace Yna.Engine.Graphics
         /// Add a new entity in the group
         /// </summary>
         /// <param name="sceneObject">An array of objects or derivated from YnObject</param>
-        public void Add(YnEntity[] sceneObject)
+        public void Add(YnSprite[] sceneObject)
         {
             int size = sceneObject.Length;
 
@@ -329,7 +329,7 @@ namespace Yna.Engine.Graphics
         /// Remove an entity from the group
         /// </summary>
         /// <param name="sceneObject"></param>
-        public void Remove(YnEntity sceneObject)
+        public void Remove(YnSprite sceneObject)
         {
             _entitiesList.Remove(sceneObject);
 
@@ -348,11 +348,11 @@ namespace Yna.Engine.Graphics
 
         public IEnumerator GetEnumerator()
         {
-            foreach (YnEntity member in _entitiesList.Members)
+            foreach (YnSprite member in _entitiesList.Members)
                 yield return member;
         }
 
-        public YnEntity GetChildByName(string name)
+        public YnSprite GetChildByName(string name)
         {
             YnGameEntity result = null;
             int i = 0;
@@ -364,7 +364,7 @@ namespace Yna.Engine.Graphics
                 i++;
             }
 
-            return result as YnEntity;
+            return result as YnSprite;
         }
 
         #endregion

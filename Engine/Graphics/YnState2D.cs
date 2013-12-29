@@ -224,7 +224,7 @@ namespace Yna.Engine.Graphics
         /// Add an entity to the scene
         /// </summary>
         /// <param name="entity">An entitiy</param>
-        public void Add(YnEntity entity)
+        public void Add(YnSprite entity)
         {
             if (Initialized && !entity.Initialized)
                 entity.Initialize();
@@ -248,7 +248,7 @@ namespace Yna.Engine.Graphics
         /// Remove an entity to the scene
         /// </summary>
         /// <param name="entity">An entitiy</param>
-        public void Remove(YnEntity entity)
+        public void Remove(YnSprite entity)
         {
             _scene.Remove(entity);
         }

@@ -11,7 +11,7 @@ namespace Yna.Engine.Graphics3D
     /// <summary>
     /// A mesh object that contains a geometry and a material.
     /// </summary>
-    public abstract class YnMesh : YnEntity3D
+    public abstract class YnMesh : YnSprite3D
     {
         protected BaseMaterial _material;
 

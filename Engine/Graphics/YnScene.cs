@@ -91,7 +91,7 @@ namespace Yna.Engine.Graphics.Scene
             _baseList.Remove(basicObject);
         }
 
-        public virtual void Remove(YnEntity entity)
+        public virtual void Remove(YnSprite entity)
         {
             _entities.Remove(entity);
         }

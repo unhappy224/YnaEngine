@@ -22,7 +22,7 @@ namespace Yna.Engine.Script
 
         private List<BaseScriptNode> _scriptNodes;
         protected bool _repeatAnimation;
-        protected YnEntity _target;
+        protected YnSprite _target;
         protected int _nodeIndex;
         protected bool _started;
         protected bool _running;
@@ -72,7 +72,7 @@ namespace Yna.Engine.Script
         /// Create an script animator for the given YnObject
         /// </summary>
         /// <param name="target"></param>
-        public ScriptAnimator(YnEntity target)
+        public ScriptAnimator(YnSprite target)
         {
             _target = target;
             _scriptNodes = new List<BaseScriptNode>();

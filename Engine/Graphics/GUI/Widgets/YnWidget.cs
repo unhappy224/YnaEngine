@@ -16,7 +16,7 @@ namespace Yna.Engine.Graphics.Gui.Widgets
     /// <summary>
     /// Base class for GUI widgets
     /// </summary>
-    public abstract class YnWidget : YnEntity
+    public abstract class YnWidget : YnSprite
     {
         #region Attributes
 
@@ -125,7 +125,7 @@ namespace Yna.Engine.Graphics.Gui.Widgets
             _depth = -1;
 
             // FIXME this tweak is horrible
-            // Fake the presence of event handlers for the YnEntity to manage
+            // Fake the presence of event handlers for the YnSprite to manage
             // mouse and touch routines
             _nbMouseEventObservers++;
         }

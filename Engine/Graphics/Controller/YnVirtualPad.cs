@@ -21,7 +21,7 @@ namespace Yna.Engine.Graphics.Controller
     /// <summary>
     /// A graphic virtual pad component that you can add to a scene and use for moving an object/camera
     /// </summary>
-    public class YnVirtualPad : YnGroup
+    public class YnVirtualPad : YnSpriteGroup
     {
         // Direction
         private YnSprite _upPad;
@@ -65,7 +65,7 @@ namespace Yna.Engine.Graphics.Controller
             {
                 _scale = value;
 
-                foreach (YnEntity entity in this)
+                foreach (YnSprite entity in this)
                     entity.Scale = value;
             }
         }

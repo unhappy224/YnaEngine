@@ -11,7 +11,7 @@ namespace Yna.Engine.Graphics3D
     /// <summary>
     /// This is a base class for all things that can be drawn on the screen
     /// </summary>
-    public abstract class YnEntity3D : YnBasicEntity
+    public abstract class YnSprite3D : YnBasicEntity
     {
         #region Protected & private declarations
 
@@ -40,7 +40,7 @@ namespace Yna.Engine.Graphics3D
         protected float _depth;
 
         // Parent
-        protected YnEntity3D _parent;
+        protected YnSprite3D _parent;
 
         // Initialization
         protected bool _initialized;
@@ -92,7 +92,7 @@ namespace Yna.Engine.Graphics3D
         /// <summary>
         /// Gets the parent object.
         /// </summary>
-        public YnEntity3D Parent
+        public YnSprite3D Parent
         {
             get { return _parent; }
             set { _parent = value; }
@@ -299,7 +299,7 @@ namespace Yna.Engine.Graphics3D
 
         #region Constructors
 
-        public YnEntity3D(Vector3 position)
+        public YnSprite3D(Vector3 position)
             : base()
         {
             _position = position;
@@ -328,7 +328,7 @@ namespace Yna.Engine.Graphics3D
             _enableLight = true;
         }
 
-        public YnEntity3D()
+        public YnSprite3D()
             : this(new Vector3(0.0f, 0.0f, 0.0f))
         {
 

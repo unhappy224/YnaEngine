@@ -29,7 +29,7 @@ namespace Yna.Engine.Graphics3D.Terrain
         /// <param name="position">Position</param>
         /// <param name="size">Size of skybox</param>
         /// <param name="textureNames">An array of textures in this order: negX/posX/negY/posY/negZ/posZ</param>
-        public SkyBox(YnEntity3D parent, Vector3 position, float size, string[] textureNames)
+        public SkyBox(YnSprite3D parent, Vector3 position, float size, string[] textureNames)
             : base(parent)
         {
             _textureNames = textureNames;
@@ -49,7 +49,7 @@ namespace Yna.Engine.Graphics3D.Terrain
         /// <param name="position">Position</param>
         /// <param name="size">Size of skybox</param>
         /// <param name="textureName">The texture to use on each face.</param>
-        public SkyBox(YnEntity3D parent, Vector3 position, float size, string textureName)
+        public SkyBox(YnSprite3D parent, Vector3 position, float size, string textureName)
             : this(parent, position, size, new string[] { })
         {
             _textureNames = new string[6];
