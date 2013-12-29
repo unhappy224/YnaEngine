@@ -123,11 +123,6 @@ namespace Yna.Engine.Graphics.Gui.Widgets
 
             // Depth is initialized at a negative value. This means it has no depth
             _depth = -1;
-
-            // FIXME this tweak is horrible
-            // Fake the presence of event handlers for the YnSprite to manage
-            // mouse and touch routines
-            _nbMouseEventObservers++;
         }
 
         /// <summary>

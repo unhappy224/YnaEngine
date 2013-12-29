@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using Yna.Engine.Helpers;
 using Yna.Engine.Graphics.Event;
+using Yna.Engine.Graphics.Component;
 
 namespace Yna.Engine.Graphics.Gui.Widgets
 {
@@ -90,10 +91,11 @@ namespace Yna.Engine.Graphics.Gui.Widgets
             _maxValue = 100;
             _dragging = false;
             _cursor = Add(new YnTextButton());
-            _cursor.MouseClick += (s, e) => _dragging = true;
-            _cursor.MouseReleased += (s, e) => _dragging = false;
-            //_cursor.MouseReleasedInside += (s, e) => _dragging = false;
-            //_cursor.MouseReleasedOutside += (s, e) => _dragging = false;
+            var dispatcher = _cursor.AddComponent<MouseEventDispatcher>();
+            dispatcher.MouseClick += (s, e) => _dragging = true;
+            dispatcher.MouseReleased += (s, e) => _dragging = false;
+            //dispatcher.MouseReleasedInside += (s, e) => _dragging = false;
+            //dispatcher.MouseReleasedOutside += (s, e) => _dragging = false;
             _labelValue = Add(new YnLabel());
         }
 

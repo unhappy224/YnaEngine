@@ -15,12 +15,12 @@ namespace Yna.Engine.Graphics3D.Controls
     /// </summary>
     public class FirstPersonVirtualPadControl : BaseControl
     {
-        private YnVirtualPadController _virtualPadController;
+        private YnVirtualGamepadController _virtualPadController;
 
         /// <summary>
         /// Gets the VirtualPad
         /// </summary>
-        public YnVirtualPad VirtualPad
+        public YnVirtualGamepad VirtualPad
         {
             get { return _virtualPadController.VirtualPad; }
         }
@@ -28,7 +28,7 @@ namespace Yna.Engine.Graphics3D.Controls
         /// <summary>
         /// Gets the VirtualController used for VirtualPad
         /// </summary>
-        public YnVirtualPadController VirtualPadController
+        public YnVirtualGamepadController VirtualPadController
         {
             get { return _virtualPadController; }
         }
@@ -40,7 +40,7 @@ namespace Yna.Engine.Graphics3D.Controls
         public FirstPersonVirtualPadControl(FirstPersonCamera camera)
             : base(camera, PlayerIndex.One)
         {
-            _virtualPadController = new YnVirtualPadController();
+            _virtualPadController = new YnVirtualGamepadController();
             Initialize();
         }
 
@@ -49,10 +49,10 @@ namespace Yna.Engine.Graphics3D.Controls
         /// </summary>
         /// <param name="camera"></param>
         /// <param name="virtualPad"></param>
-        public FirstPersonVirtualPadControl(FirstPersonCamera camera, YnVirtualPad virtualPad)
+        public FirstPersonVirtualPadControl(FirstPersonCamera camera, YnVirtualGamepad virtualPad)
             : base(camera, PlayerIndex.One)
         {
-            _virtualPadController = new YnVirtualPadController(virtualPad);
+            _virtualPadController = new YnVirtualGamepadController(virtualPad);
             Initialize();
         }
 

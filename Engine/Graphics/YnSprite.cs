@@ -21,6 +21,9 @@ namespace Yna.Engine.Graphics
         TopLeft = 0, Top, TopRight, Left, Center, Right, BottomLeft, Bottom, BottomRight
     }
 
+    /// <summary>
+    /// Define a drawable 2D object
+    /// </summary>
     public class YnSprite : YnGameEntity, ICollidable2
     {
         #region Protected declarations
@@ -34,7 +37,6 @@ namespace Yna.Engine.Graphics
         protected Vector2 _position;
         protected Vector2 _screenPosition;
         protected Rectangle _bounds;
-        private Rectangle _cacheScreenBounds;
         protected Vector2 _distance;
         protected Vector2 _direction;
         protected Vector2 _lastPosition;
@@ -52,9 +54,8 @@ namespace Yna.Engine.Graphics
 
         // Define the position of the sprite relative to its parent
         protected YnSprite _parent;
-        protected int _nbMouseEventObservers;
-        protected bool _clicked;
         protected bool _hovered;
+        protected bool _clicked;
 
         // Components
         protected List<SpriteComponent> _components;
@@ -76,7 +77,6 @@ namespace Yna.Engine.Graphics
                 _visible = !value;
             }
         }
-
 
         /// <summary>
         /// Gets or sets the Texture2D used by the object
@@ -101,22 +101,6 @@ namespace Yna.Engine.Graphics
                     _assetName = value;
                 }
             }
-        }
-
-        /// <summary>
-        /// Flag indicating that the entity is currently hovered (touch or mouse)
-        /// </summary>
-        public bool Hovered
-        {
-            get { return _hovered; }
-        }
-
-        /// <summary>
-        /// Flag indicating that the entity is currently beeing clicked (touch or mouse)
-        /// </summary>
-        public bool Clicked
-        {
-            get { return _clicked; }
         }
 
         /// <summary>
@@ -347,9 +331,27 @@ namespace Yna.Engine.Graphics
             get { return _lastDistance; }
         }
 
+        /// <summary>
+        /// Flag indicating that the entity is currently hovered (touch or mouse)
+        /// </summary>
+        public bool Hovered
+        {
+            get { return _hovered; }
+            internal set { _hovered = value; }
+        }
+
+        /// <summary>
+        /// Flag indicating that the entity is currently beeing clicked (touch or mouse)
+        /// </summary>
+        public bool Clicked
+        {
+            get { return _clicked; }
+            internal set { _clicked = value; }
+        }
+
         #endregion
 
-        #region Events for life cycle and input
+        #region Events for life
 
         /// <summary>
         /// Triggered when the object was killed
@@ -371,128 +373,6 @@ namespace Yna.Engine.Graphics
         {
             if (Revived != null)
                 Revived(this, e);
-        }
-
-        // Mouse events
-        private event EventHandler<MouseOverEntityEventArgs> _mouseOver = null;
-        private event EventHandler<MouseLeaveEntityEventArgs> _mouseLeave = null;
-        private event EventHandler<MouseClickEntityEventArgs> _mouseClicked = null;
-        private event EventHandler<MouseClickEntityEventArgs> _mouseClick = null;
-        private event EventHandler<MouseReleaseEntityEventArgs> _mouseRelease = null;
-
-        /// <summary>
-        /// Triggered when the mouse is over the object
-        /// </summary>
-        public event EventHandler<MouseOverEntityEventArgs> MouseOver
-        {
-            add
-            {
-                _mouseOver += value;
-                _nbMouseEventObservers++;
-            }
-            remove
-            {
-                _mouseOver -= value;
-                _nbMouseEventObservers--;
-            }
-        }
-
-        /// <summary>
-        /// Triggered when the mouse leave the object
-        /// </summary>
-        public event EventHandler<MouseLeaveEntityEventArgs> MouseLeave
-        {
-            add
-            {
-                _mouseLeave += value;
-                _nbMouseEventObservers++;
-            }
-            remove
-            {
-                _mouseLeave -= value;
-                _nbMouseEventObservers--;
-            }
-        }
-
-        /// <summary>
-        /// Triggered when a click (and just one) is detected over the object
-        /// </summary>
-        public event EventHandler<MouseClickEntityEventArgs> MouseClicked
-        {
-            add
-            {
-                _mouseClicked += value;
-                _nbMouseEventObservers++;
-            }
-            remove
-            {
-                _mouseClicked -= value;
-                _nbMouseEventObservers--;
-            }
-        }
-
-        /// <summary>
-        /// Triggered when click are detected over the object
-        /// </summary>
-        public event EventHandler<MouseClickEntityEventArgs> MouseClick
-        {
-            add
-            {
-                _mouseClick += value;
-                _nbMouseEventObservers++;
-            }
-            remove
-            {
-                _mouseClick -= value;
-                _nbMouseEventObservers--;
-            }
-        }
-
-        /// <summary>
-        /// Triggered when click are detected over the object
-        /// </summary>
-        public event EventHandler<MouseReleaseEntityEventArgs> MouseReleased
-        {
-            add
-            {
-                _mouseRelease += value;
-                _nbMouseEventObservers++;
-            }
-            remove
-            {
-                _mouseRelease -= value;
-                _nbMouseEventObservers--;
-            }
-        }
-
-        private void MouseOverSprite(MouseOverEntityEventArgs e)
-        {
-            if (_mouseOver != null)
-                _mouseOver(this, e);
-        }
-
-        private void MouseLeaveSprite(MouseLeaveEntityEventArgs e)
-        {
-            if (_mouseLeave != null)
-                _mouseLeave(this, e);
-        }
-
-        private void MouseJustClickedSprite(MouseClickEntityEventArgs e)
-        {
-            if (_mouseClicked != null)
-                _mouseClicked(this, e);
-        }
-
-        private void MouseClickSprite(MouseClickEntityEventArgs e)
-        {
-            if (_mouseClick != null)
-                _mouseClick(this, e);
-        }
-
-        private void MouseReleaseSprite(MouseReleaseEntityEventArgs e)
-        {
-            if (_mouseRelease != null)
-                _mouseRelease(this, e);
         }
 
         #endregion
@@ -520,7 +400,6 @@ namespace Yna.Engine.Graphics
             _effects = SpriteEffects.None;
             _layerDepth = 1.0f;
             _parent = null;
-            _nbMouseEventObservers = 0;
             _distance = Vector2.One;
             _direction = Vector2.Zero;
             _lastPosition = Vector2.Zero;
@@ -586,7 +465,7 @@ namespace Yna.Engine.Graphics
                 component.Initialize();
                 _components.Add(component);
             }
-            
+
             return component;
         }
 
@@ -703,16 +582,16 @@ namespace Yna.Engine.Graphics
             SetSize(width, height, true);
         }
 
-
-        public Vector2 GetScreenPosition()
+        /// <summary>
+        /// Update the screen position relative to its parent
+        /// </summary>
+        public void UpdateScreenPosition()
         {
-            _screenPosition = Position;
+            _screenPosition = _position;
 
             // Relative position to it's parent
             if (_parent != null)
                 _screenPosition += _parent.ScreenPosition;
-
-            return _screenPosition;
         }
 
         #endregion
@@ -797,60 +676,6 @@ namespace Yna.Engine.Graphics
 
         #endregion
 
-        #region Event detection
-
-        protected virtual void UpdateMouseEvents()
-        {
-            // We check if the mouse events only if an event handler exists for one of mouse events
-            if (_nbMouseEventObservers > 0)
-            {
-                if (_cacheScreenBounds.Contains(YnG.Mouse.X, YnG.Mouse.Y))
-                {
-                    _hovered = true;
-                    // Mouse Over
-                    MouseOverSprite(new MouseOverEntityEventArgs(YnG.Mouse.X, YnG.Mouse.Y));
-
-                    // Just clicked
-                    if (YnG.Mouse.JustClicked(MouseButton.Left) || YnG.Mouse.JustClicked(MouseButton.Middle) || YnG.Mouse.JustClicked(MouseButton.Right))
-                    {
-                        _clicked = true;
-                        MouseButton mouseButton = MouseButton.Right;
-
-                        if (YnG.Mouse.JustClicked(MouseButton.Left))
-                            mouseButton = MouseButton.Left;
-                        else if (YnG.Mouse.JustClicked(MouseButton.Middle))
-                            mouseButton = MouseButton.Middle;
-
-                        MouseJustClickedSprite(new MouseClickEntityEventArgs(YnG.Mouse.X, YnG.Mouse.Y, mouseButton, true, false));
-                    }
-
-                    // One click
-                    else if (YnG.Mouse.ClickOn(MouseButton.Left, ButtonState.Pressed) || YnG.Mouse.ClickOn(MouseButton.Middle, ButtonState.Pressed) || YnG.Mouse.ClickOn(MouseButton.Right, ButtonState.Pressed))
-                    {
-                        MouseButton mouseButton = MouseButton.Right;
-
-                        if (YnG.Mouse.ClickOn(MouseButton.Left, ButtonState.Pressed))
-                            mouseButton = MouseButton.Left;
-                        else if (YnG.Mouse.ClickOn(MouseButton.Middle, ButtonState.Pressed))
-                            mouseButton = MouseButton.Middle;
-
-                        MouseClickSprite(new MouseClickEntityEventArgs(YnG.Mouse.X, YnG.Mouse.Y, mouseButton, false, false));
-                    }
-                    else
-                        MouseReleaseSprite(new MouseReleaseEntityEventArgs(YnG.Mouse.X, YnG.Mouse.Y));
-                }
-
-                // Mouse leave
-                else if (Bounds.Contains(YnG.Mouse.LastMouseState.X, YnG.Mouse.LastMouseState.Y))
-                    MouseLeaveSprite(new MouseLeaveEntityEventArgs(YnG.Mouse.LastMouseState.X, YnG.Mouse.LastMouseState.Y, YnG.Mouse.X, YnG.Mouse.Y));
-
-                else
-                    MouseReleaseSprite(new MouseReleaseEntityEventArgs(YnG.Mouse.X, YnG.Mouse.Y));
-            }
-        }
-
-        #endregion
-
         #region GameState pattern
 
         public override void Initialize()
@@ -908,27 +733,19 @@ namespace Yna.Engine.Graphics
             _clicked = false;
             _hovered = false;
 
-            GetScreenPosition();
-
-            _cacheScreenBounds.X = (int)(ScreenPosition.X - _origin.X);
-            _cacheScreenBounds.Y = (int)(ScreenPosition.Y - _origin.Y);
-            _cacheScreenBounds.Width = (int)(_bounds.Width * _scale.X);
-            _cacheScreenBounds.Height = (int)(_bounds.Height * _scale.Y);
-
             // Update last position/direction
             _lastPosition.X = _position.X;
             _lastPosition.Y = _position.Y;
             _lastDistance.X = _distance.X;
             _lastDistance.Y = _distance.Y;
 
-            UpdateMouseEvents();
+            UpdateScreenPosition();
 
             for (int i = 0, l = _components.Count; i < l; i++)
             {
                 if (_components[i].Enabled)
                     _components[i].Update(gameTime);
             }
-
         }
 
         /// <summary>

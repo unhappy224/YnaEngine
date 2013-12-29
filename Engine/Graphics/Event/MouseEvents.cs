@@ -9,7 +9,7 @@ namespace Yna.Engine.Graphics.Event
     /// <summary>
     /// Event class used for entity mouse event.
     /// </summary>
-    public class MouseEntityEventArgs : EventArgs
+    public class MouseSpriteEventArgs : EventArgs
     {
         /// <summary>
         /// X position on screen.
@@ -21,13 +21,13 @@ namespace Yna.Engine.Graphics.Event
         /// </summary>
         public int Y { get; protected set; }
 
-        public MouseEntityEventArgs()
+        public MouseSpriteEventArgs()
         {
             X = 0;
             Y = 0;
         }
 
-        public MouseEntityEventArgs(int x, int y)
+        public MouseSpriteEventArgs(int x, int y)
         {
             X = x;
             Y = y;
@@ -37,7 +37,7 @@ namespace Yna.Engine.Graphics.Event
     /// <summary>
     /// Event class used when a mouse clic is done on an entity.
     /// </summary>
-    public class MouseClickEntityEventArgs : MouseEntityEventArgs
+    public class MouseClickSpriteEventArgs : MouseSpriteEventArgs
     {
         /// <summary>
         /// The mouse button who clicked.
@@ -47,7 +47,7 @@ namespace Yna.Engine.Graphics.Event
         public bool JustClicked;
         public bool DoubleClicked;
 
-        public MouseClickEntityEventArgs(int x, int y, MouseButton mouseButton, bool justClicked, bool doubleClicked)
+        public MouseClickSpriteEventArgs(int x, int y, MouseButton mouseButton, bool justClicked, bool doubleClicked)
             : base(x, y)
         {
             MouseButton = mouseButton;
@@ -59,12 +59,12 @@ namespace Yna.Engine.Graphics.Event
     /// <summary>
     /// Event class used when the mouse position leave an entity.
     /// </summary>
-    public class MouseLeaveEntityEventArgs : MouseEntityEventArgs
+    public class MouseLeaveSpriteEventArgs : MouseSpriteEventArgs
     {
         public int LastX { get; protected set; }
         public int LastY { get; protected set; }
 
-        public MouseLeaveEntityEventArgs(int lastX, int lastY, int x, int y)
+        public MouseLeaveSpriteEventArgs(int lastX, int lastY, int x, int y)
             : base (x, y)
         {
             LastX = lastX;
@@ -75,7 +75,7 @@ namespace Yna.Engine.Graphics.Event
     /// <summary>
     /// Event class used when the mouse is over an entity.
     /// </summary>
-    public class MouseOverEntityEventArgs : MouseEntityEventArgs
+    public class MouseOverEntityEventArgs : MouseSpriteEventArgs
     {
         public MouseOverEntityEventArgs(int x, int y)
             : base(x, y)
@@ -87,9 +87,9 @@ namespace Yna.Engine.Graphics.Event
     /// <summary>
     /// Event class used when the mouse button release on an entity.
     /// </summary>
-    public class MouseReleaseEntityEventArgs : MouseEntityEventArgs
+    public class MouseReleaseSpriteEventArgs : MouseSpriteEventArgs
     {
-        public MouseReleaseEntityEventArgs(int x, int y)
+        public MouseReleaseSpriteEventArgs(int x, int y)
             : base(x, y)
         {
 

@@ -12,7 +12,7 @@ using Yna.Engine.Resources;
 
 namespace Yna.Engine.Graphics.Controller
 {
-    public sealed class YnVirtualStick : YnSpriteGroup
+    public sealed class YnVirtualGamestick : YnSpriteGroup
     {
         private Vector2 _startPosition;
         private Vector2 _stickPosition;
@@ -70,7 +70,7 @@ namespace Yna.Engine.Graphics.Controller
             get { return _delta; }
         }
 
-        public YnVirtualStick()
+        public YnVirtualGamestick()
         {
             _fingerTarget = 0;
             _stayVisible = true;
@@ -81,7 +81,7 @@ namespace Yna.Engine.Graphics.Controller
             _sensitivity = new Vector2(1);
         }
 
-        public YnVirtualStick(string background, string foreground)
+        public YnVirtualGamestick(string background, string foreground)
             : this()
         {
             _textureNames = new string[2] { background, foreground };

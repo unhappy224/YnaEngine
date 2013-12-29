@@ -9,14 +9,14 @@ namespace Yna.Engine.Graphics.Event
     /// <summary>
     /// Event for virtul pad controller who're used to notify the direction.
     /// </summary>
-    public class VirtualPadPressedEventArgs : EventArgs
+    public class VirtualPadEventArgs : EventArgs
     {
-        public PadButtons Direction { get; set; }
+        public PadButtons Direction { get; protected set; }
 
         /// <summary>
         /// Create an empty event.
         /// </summary>
-        public VirtualPadPressedEventArgs()
+        public VirtualPadEventArgs()
         {
             Direction = PadButtons.None;
         }
@@ -25,7 +25,7 @@ namespace Yna.Engine.Graphics.Event
         /// Create an event with a direction.
         /// </summary>
         /// <param name="direction"></param>
-        public VirtualPadPressedEventArgs(PadButtons direction)
+        public VirtualPadEventArgs(PadButtons direction)
         {
             Direction = direction;
         }

@@ -109,7 +109,7 @@ namespace Yna.Engine.Input
 
         public bool Released(MouseButton button)
         {
-            return ClickOn(button, ButtonState.Released);
+            return ButtonDown(button, ButtonState.Released);
         }
 
         public void SetPosition(int x, int y)
@@ -162,7 +162,7 @@ namespace Yna.Engine.Input
             return justReleased;
         }
 
-        public bool ClickOn(MouseButton button, ButtonState state)
+        public bool ButtonDown(MouseButton button, ButtonState state)
         {
             bool result = false;
 
@@ -178,7 +178,7 @@ namespace Yna.Engine.Input
 
         public bool Click(MouseButton button)
         {
-            return ClickOn(button, ButtonState.Pressed);
+            return ButtonDown(button, ButtonState.Pressed);
         }
 
         #endregion

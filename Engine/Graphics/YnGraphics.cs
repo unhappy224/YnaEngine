@@ -13,6 +13,36 @@ namespace Yna.Engine.Graphics
     public class YnGraphics
     {
         /// <summary>
+        /// Creates a bordered texture
+        /// </summary>
+        /// <returns>The border texture.</returns>
+        /// <param name="borderColor">Border color.</param>
+        /// <param name="color">Color.</param>
+        /// <param name="width">Width.</param>
+        /// <param name="height">Height.</param>
+        /// <param name="thickness">Thickness.</param>
+        public static Texture2D CreateBorderTexture(Color borderColor, Color color, int width, int height, int thickness)
+        {
+            Texture2D texture = new Texture2D(YnG.GraphicsDevice, width, height);
+            Color[] colors = new Color[width * height];
+
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    if (y == 0 || y < thickness || y == (height - 1) || y > (height - thickness - 1) || (x == 0 || x < thickness || x == (width - 1) || x > (width - thickness - 1)))
+                        colors[x + y * width] = borderColor;
+                    else
+                        colors[x + y * width] = color;
+                }
+            }
+
+            texture.SetData<Color>(colors);
+
+            return texture;
+        }
+
+        /// <summary>
         /// Create an array of color.
         /// </summary>
         /// <param name="desiredColor">Desired color</param>

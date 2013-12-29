@@ -5,6 +5,7 @@ using System;
 using Microsoft.Xna.Framework;
 using Yna.Engine.Graphics.Event;
 using Microsoft.Xna.Framework.Graphics;
+using Yna.Engine.Graphics.Component;
 
 namespace Yna.Engine.Graphics.Controller
 {
@@ -21,7 +22,7 @@ namespace Yna.Engine.Graphics.Controller
     /// <summary>
     /// A graphic virtual pad component that you can add to a scene and use for moving an object/camera
     /// </summary>
-    public class YnVirtualPad : YnSpriteGroup
+    public class YnVirtualGamepad : YnSpriteGroup
     {
         // Direction
         private YnSprite _upPad;
@@ -186,20 +187,20 @@ namespace Yna.Engine.Graphics.Controller
         /// <summary>
         /// Triggered when a button is pressed
         /// </summary>
-        public event EventHandler<VirtualPadPressedEventArgs> VirtualPadPressed = null;
+        public event EventHandler<VirtualPadEventArgs> VirtualPadPressed = null;
 
         /// <summary>
         /// Triggered when a button is released
         /// </summary>
-        public event EventHandler<VirtualPadPressedEventArgs> VirtualPadReleased = null;
+        public event EventHandler<VirtualPadEventArgs> VirtualPadReleased = null;
 
-        private void OnPressed(VirtualPadPressedEventArgs e)
+        private void OnPressed(VirtualPadEventArgs e)
         {
             if (VirtualPadPressed != null)
                 VirtualPadPressed(this, e);
         }
 
-        private void OnReleased(VirtualPadPressedEventArgs e)
+        private void OnReleased(VirtualPadEventArgs e)
         {
             if (VirtualPadReleased != null)
                 VirtualPadReleased(this, e);
@@ -210,7 +211,7 @@ namespace Yna.Engine.Graphics.Controller
         /// <summary>
         /// Create a new Virtual pad
         /// </summary>
-        public YnVirtualPad()
+        public YnVirtualGamepad()
         {
             InitializeDefault();
             InitializeWithoutTextures();
@@ -225,7 +226,7 @@ namespace Yna.Engine.Graphics.Controller
         /// Order for buttons : ButtonA, ButtonB, ButtonPause
         /// </summary>
         /// <param name="textureNames"></param>
-        public YnVirtualPad(string [] dpadTextureNames, string[] buttonTextureNames)
+        public YnVirtualGamepad(string [] dpadTextureNames, string[] buttonTextureNames)
             : base()
         {
             _dpadTextureNames = dpadTextureNames;
@@ -358,8 +359,9 @@ namespace Yna.Engine.Graphics.Controller
 
             foreach (YnSprite sprite in this)
             {
-                sprite.MouseClick += Pad_Click;
-                sprite.MouseReleased += Pad_Released;
+                var dispatcher = sprite.AddComponent<MouseEventDispatcher>();
+                dispatcher.MouseClick += Pad_Click;
+                dispatcher.MouseReleased += Pad_Released;
                 sprite.Alpha = _alpha;
             }
         }
@@ -452,14 +454,14 @@ namespace Yna.Engine.Graphics.Controller
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        protected virtual void Pad_Click(object sender, MouseClickEntityEventArgs e)
+        protected virtual void Pad_Click(object sender, MouseClickSpriteEventArgs e)
         {
             YnSprite button = sender as YnSprite;
 
             if (button != null)
             {
                 PadButtons direction = GetDirection(button.Name);
-                VirtualPadPressedEventArgs vpEvent = new VirtualPadPressedEventArgs(direction);
+                VirtualPadEventArgs vpEvent = new VirtualPadEventArgs(direction);
 
                 OnPressed(vpEvent);
             }
@@ -470,14 +472,14 @@ namespace Yna.Engine.Graphics.Controller
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        protected virtual void Pad_Released(object sender, MouseReleaseEntityEventArgs e)
+        protected virtual void Pad_Released(object sender, MouseReleaseSpriteEventArgs e)
         {
             YnSprite button = sender as YnSprite;
 
             if (button != null)
             {
                 PadButtons direction = GetDirection(button.Name);
-                VirtualPadPressedEventArgs vpEvent = new VirtualPadPressedEventArgs(direction);
+                VirtualPadEventArgs vpEvent = new VirtualPadEventArgs(direction);
 
                 OnReleased(vpEvent);
             }

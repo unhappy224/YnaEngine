@@ -10,16 +10,16 @@ namespace Yna.Engine.Graphics.Controller
     /// <summary>
     /// A Virtual pad controller that create a virtual pad and manage events
     /// </summary>
-    public class YnVirtualPadController
+    public class YnVirtualGamepadController
     {
         protected bool[] _buttons;
 
-        private YnVirtualPad _virtualPad;
+        private YnVirtualGamepad _virtualPad;
 
         /// <summary>
         /// Gets or sets the virtual pad used with this controller
         /// </summary>
-        public YnVirtualPad VirtualPad
+        public YnVirtualGamepad VirtualPad
         {
             get { return _virtualPad; }
             set { _virtualPad = value; }
@@ -28,9 +28,9 @@ namespace Yna.Engine.Graphics.Controller
         /// <summary>
         /// Create a new controller for a virtual pad
         /// </summary>
-        public YnVirtualPadController()
+        public YnVirtualGamepadController()
         {
-            _virtualPad = new YnVirtualPad();
+            _virtualPad = new YnVirtualGamepad();
             _virtualPad.VirtualPadPressed += _virtualPad_Pressed;
             _virtualPad.VirtualPadReleased += _virtualPad_Released;
             _buttons = new bool[10];
@@ -39,7 +39,7 @@ namespace Yna.Engine.Graphics.Controller
                 _buttons[i] = false;
         }
 
-		public YnVirtualPadController(YnVirtualPad virtualPad)
+		public YnVirtualGamepadController(YnVirtualGamepad virtualPad)
         {
             _virtualPad = virtualPad;
             _virtualPad.VirtualPadPressed += _virtualPad_Pressed;
@@ -50,12 +50,12 @@ namespace Yna.Engine.Graphics.Controller
                 _buttons[i] = false;
         }
 		
-        private void _virtualPad_Released(object sender, VirtualPadPressedEventArgs e)
+        private void _virtualPad_Released(object sender, VirtualPadEventArgs e)
         {
             _buttons[(int)e.Direction] = false;
         }
 
-        private void _virtualPad_Pressed(object sender, VirtualPadPressedEventArgs e)
+        private void _virtualPad_Pressed(object sender, VirtualPadEventArgs e)
         {
             _buttons[(int)e.Direction] = true;
         }

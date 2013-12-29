@@ -56,5 +56,17 @@ namespace Microsoft.Xna.Framework
         {
             return new Vector2(rectangle.X, rectangle.Y);
         }
+
+#if WINDOWS_PHONE_7
+        public static bool Contains(this Rectangle rectangle, Vector2 vector)
+        {
+            return rectangle.Contains(ref vector);
+        }
+
+        public static bool Contains(this Rectangle rectangle, ref Vector2 vector)
+        {
+            return rectangle.Contains((int)vector.X, (int)vector.Y);
+        }
+#endif
     }
 }
