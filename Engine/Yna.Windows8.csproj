@@ -109,7 +109,8 @@
     <Compile Include="Audio\DummyAudioAdapter.cs" />
     <Compile Include="Audio\XnaAudioAdapter.cs" />
     <Compile Include="Extensions\BoundingFrustrumExtension.cs" />
-    <Compile Include="Graphics\Component\YnVirtualStick.cs" />
+    <Compile Include="Graphics\Controller\YnVirtualStick.cs" />
+    <Compile Include="Graphics\Event\InterpolatorEventArgs.cs" />
     <Compile Include="Graphics\ICollidable.cs" />
     <Compile Include="Extensions\BoundingBoxExtension.cs" />
     <Compile Include="Extensions\BoundingSphereExtension.cs" />
@@ -123,8 +124,7 @@
     <Compile Include="YnBasicCollection.cs" />
     <Compile Include="YnGameEntityCollection.cs" />
     <Compile Include="YnGameEntity.cs" />
-    <Compile Include="Graphics\Animation\AnimationEventArgs.cs" />
-    <Compile Include="Graphics\Component\YnVirtualPadController.cs" />
+    <Compile Include="Graphics\Controller\YnVirtualPadController.cs" />
     <Compile Include="Graphics\Gui\YnWidgetProperties.cs" />
     <Compile Include="Graphics\Particle\YnEmitter.cs" />
     <Compile Include="Graphics\Particle\YnParticle.cs" />
@@ -134,14 +134,12 @@
     <Compile Include="Graphics\Animation\IEffectAnimation.cs" />
     <Compile Include="Graphics\Animation\YnInterpolator.cs" />
     <Compile Include="Graphics\Event\VirtualPadEventArgs.cs" />
-    <Compile Include="Graphics\Component\YnVirtualPad.cs" />
+    <Compile Include="Graphics\Controller\YnVirtualPad.cs" />
     <Compile Include="Content\ContentEventArgs.cs" />
     <Compile Include="Graphics\YnGraphics.cs" />
     <Compile Include="Graphics\YnPool.cs" />
     <Compile Include="Graphics\YnText.cs" />
     <Compile Include="Graphics\YnCamera2D.cs" />
-    <Compile Include="Graphics\Animation\SpriteAnimation.cs" />
-    <Compile Include="Graphics\Animation\SpriteAnimator.cs" />
     <Compile Include="Graphics\Animation\YnTransitionEffect.cs" />
     <Compile Include="Graphics\Animation\YnShakeEffect.cs" />
     <Compile Include="Graphics\Event\GlobalEventArgs.cs" />
@@ -176,8 +174,7 @@
     <Compile Include="YnBasicEntity.cs" />
     <Compile Include="YnG.cs" />
     <Compile Include="YnGame.cs" />
-    <Compile Include="Graphics\YnGroup.cs" />
-    <Compile Include="Graphics\YnEntity.cs" />
+    <Compile Include="Graphics\YnSpriteGroup.cs" />
     <Compile Include="YnCollection.cs" />
     <Compile Include="YnQuadTree.cs" />
     <Compile Include="YnTimer.cs" />
@@ -247,6 +244,11 @@
     <Compile Include="Script\MoveScript.cs" />
     <Compile Include="Script\ScriptAnimator.cs" />
     <Compile Include="Script\WaitScript.cs" />
+    <Compile Include="Resources\ResourceHelper.cs" />
+    <Compile Include="Graphics\Component\SpritePhysics.cs" />
+    <Compile Include="Graphics\Component\SpriteComponent.cs" />
+    <Compile Include="Graphics\Component\SpriteAnimation.cs" />
+    <Compile Include="Graphics\Component\SpriteAnimator.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">
@@ -254,9 +256,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Graphics3D\Material\Resources\NormalMapEffect.dx11.mgfxo" />
-    <EmbeddedResource Include="Graphics\Component\Resources\gamepad_bg.png" />
-    <EmbeddedResource Include="Graphics\Component\Resources\gamepad_fg.png" />
+    <EmbeddedResource Include="Resources\Effects\NormalMapEffect.dx11.mgfxo" />
+    <EmbeddedResource Include="Resources\Controller\gamepad_bg.png" />
+    <EmbeddedResource Include="Resources\Controller\gamepad_fg.png" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '12.0' ">
     <VisualStudioVersion>12.0</VisualStudioVersion>
