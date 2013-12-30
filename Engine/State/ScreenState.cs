@@ -11,11 +11,11 @@ namespace Yna.Engine.State
     /// A basic state used with the state manager
     /// A state represents a game screen as a menu, a scene or a score screen.
     /// </summary>
-    public abstract class YnState : YnGameObject
+    public abstract class ScreenState : YnGameObject
     {
         private static int ScreenCounter = 0;
         protected SpriteBatch spriteBatch;
-        protected StateManager stateManager;
+        protected YnStateManager stateManager;
 
 
         public SpriteBatch SpriteBatch
@@ -27,7 +27,7 @@ namespace Yna.Engine.State
         /// <summary>
         /// Gets or sets the Screen Manager
         /// </summary>
-        public StateManager StateManager
+        public YnStateManager StateManager
         {
             get { return stateManager; }
             set
@@ -73,13 +73,13 @@ namespace Yna.Engine.State
 
         #region Constructors
 
-        public YnState()
+        public ScreenState()
             : base()
         {
             _name = "State_" + (ScreenCounter++);
         }
 
-        public YnState(string name)
+        public ScreenState(string name)
             : this()
         {
             _name = name;

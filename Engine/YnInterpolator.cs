@@ -5,7 +5,7 @@ using System;
 using Microsoft.Xna.Framework;
 using Yna.Engine.Graphics.Event;
 
-namespace Yna.Engine.Graphics.Animation
+namespace Yna.Engine
 {
     /// <summary>
     /// An integer interpolator

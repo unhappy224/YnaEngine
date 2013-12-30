@@ -28,7 +28,7 @@ namespace Yna.Engine.Graphics
     /// That allows you to add different types of objects.
     /// Timers, basic objects (which have an update method) and entities
     /// </summary>
-    public class YnState2D : YnState
+    public class YnState2D : ScreenState
     {
         protected YnScene _scene;
         protected SpriteBatchParameters _batchParams;

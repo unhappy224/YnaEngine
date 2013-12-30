@@ -109,7 +109,7 @@ namespace Yna.Engine
 		/// <param name="applyResolution">If set to <c>true</c> apply resolution.</param>
 		public static void Setup(int width, int height, bool applyResolution)
 		{
-			Setup (width, height, ReferenceWidth, ReferenceWidth, applyResolution);
+			Setup (width, height, ReferenceWidth, ReferenceHeight, applyResolution);
 		}
 
 		/// <summary>

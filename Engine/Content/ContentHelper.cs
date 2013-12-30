@@ -10,6 +10,9 @@ using System.Xml.Serialization;
 
 namespace Yna.Engine.Content
 {
+#if NETFX_CORE
+    // Temp of course
+#else
     /// <summary>
     /// Content helper that provide some methods for load non xnb assets like Texture2D, Song, SoundEffect and XML
     /// </summary>
@@ -147,4 +150,5 @@ namespace Yna.Engine.Content
             return texture;
         }
     }
+#endif
 }

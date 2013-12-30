@@ -48,6 +48,7 @@ namespace Yna.Engine.Graphics.Component
             _nbSpriteY = 0;
             _spritesheetLenght = 0;
             _currentAnimationName = String.Empty;
+            _animations = new Dictionary<string, SpriteAnimation>();
         }
 
         #region Prepare and add animations
@@ -161,11 +162,6 @@ namespace Yna.Engine.Graphics.Component
 
         #endregion
 
-        internal override void Initialize()
-        {
-            _animations = new Dictionary<string, SpriteAnimation>();
-        }
-
         /// <summary>
         /// Initialization of the animator.
         /// </summary>
@@ -263,13 +259,13 @@ namespace Yna.Engine.Graphics.Component
         /// Update animator.
         /// </summary>
         /// <param name="gameTime">GameTime object.</param>
-        internal override void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
             if (_currentAnimationName != String.Empty)
                 _animations[_currentAnimationName].Update(gameTime);
         }
 
-        internal override void PostUpdate(GameTime gameTime)
+        public override void PostUpdate(GameTime gameTime)
         {
             if (Sprite.LastDistance == Vector2.Zero && CurrentAnimationName != String.Empty)
                 Sprite.SourceRectangle = GetCurrentAnimation().Rectangle[0];

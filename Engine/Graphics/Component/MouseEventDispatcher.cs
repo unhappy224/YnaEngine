@@ -79,7 +79,7 @@ namespace Yna.Engine.Graphics.Component
             _cacheScreenBounds = Rectangle.Empty;
         }
 
-        internal override void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
             _cacheScreenBounds.X = (int)(Sprite.ScreenPosition.X - Sprite.Origin.X);
             _cacheScreenBounds.Y = (int)(Sprite.ScreenPosition.Y - Sprite.Origin.Y);

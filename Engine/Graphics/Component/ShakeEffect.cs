@@ -63,7 +63,7 @@ namespace Yna.Engine.Graphics.Component
         /// Update the effect
         /// </summary>
         /// <param name="gameTime"></param>
-        internal override void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
             if (_shaking)
             {

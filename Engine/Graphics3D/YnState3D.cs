@@ -12,7 +12,7 @@ namespace Yna.Engine.Graphics3D
     /// <summary>
     /// A 3D state who contains a camera manager, a scene manager and a collection of basic objects (timers, controllers, etc...)
     /// </summary>
-    public class YnState3D : YnState
+    public class YnState3D : ScreenState
     {
         private CameraManager _cameraManager;
         private YnScene3D _scene;

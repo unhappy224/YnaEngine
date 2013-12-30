@@ -4,12 +4,12 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Yna.Engine.Graphics.Animation;
-using Yna.Engine.Graphics.Component;
+using Yna.Engine.Graphics.Controller;
 using System.Collections.Generic;
 using Yna.Engine.Graphics.Event;
 using Yna.Engine.Input;
 using Microsoft.Xna.Framework.Input;
+using Yna.Engine.Graphics.Component;
 
 namespace Yna.Engine.Graphics
 {

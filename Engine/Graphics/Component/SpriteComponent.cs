@@ -27,18 +27,18 @@ namespace Yna.Engine.Graphics.Component
         /// <summary>
         /// Default initialization
         /// </summary>
-        internal virtual void Initialize() { }
+        public virtual void Initialize() { }
 
         /// <summary>
         /// Update the component. Called after the base update of the Sprite.
         /// </summary>
         /// <param name="gameTime"></param>
-        internal virtual void Update(GameTime gameTime) { }
+        public virtual void Update(GameTime gameTime) { }
 
         /// <summary>
         /// Second update called after the first update and just before Draw.
         /// </summary>
         /// <param name="gameTime"></param>
-        internal virtual void PostUpdate(GameTime gameTime) { }
+        public virtual void PostUpdate(GameTime gameTime) { }
     }
 }

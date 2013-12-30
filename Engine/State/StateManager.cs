@@ -14,11 +14,11 @@ namespace Yna.Engine.State
     /// A state represents a game screen as a menu, a scene or a score screen. 
     /// The state manager can add, delete, and work with registered states.
     /// </summary>
-    public class StateManager : DrawableGameComponent
+    public class YnStateManager : DrawableGameComponent
     {
         #region Private declarations
 
-        private List<YnState> _states;
+        private List<ScreenState> _states;
         private Dictionary<string, int> _statesDictionary;
 
         private bool _initialized;
@@ -53,14 +53,14 @@ namespace Yna.Engine.State
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        public YnState this[int index]
+        public ScreenState this[int index]
         {
             get
             {
                 if (index < 0 || index > _states.Count - 1)
                     return null;
                 else
-                    return _states[index] as YnState;
+                    return _states[index] as ScreenState;
             }
             set
             {
@@ -73,18 +73,17 @@ namespace Yna.Engine.State
 
         #endregion
 
-        public StateManager(Game game)
+        public YnStateManager(Game game)
             : base(game)
         {
             _clearColor = Color.Black;
 
-            _states = new List<YnState>();
+            _states = new List<ScreenState>();
             _statesDictionary = new Dictionary<string, int>();
 
             _initialized = false;
             _assetLoaded = false;
         }
-
 
         #region GameState pattern
 
@@ -165,7 +164,7 @@ namespace Yna.Engine.State
         /// <returns>State index</returns>
         public int IndexOf(string name)
         {
-            YnState state = GetStateByName(name);
+            ScreenState state = GetStateByName(name);
 
             if (state != null)
                 return _states.IndexOf(state);
@@ -178,7 +177,7 @@ namespace Yna.Engine.State
         /// </summary>
         /// <param name="name">State</param>
         /// <returns>State index</returns>
-        public int IndexOf(YnState state)
+        public int IndexOf(ScreenState state)
         {
             return _states.IndexOf(state);
         }
@@ -189,7 +188,7 @@ namespace Yna.Engine.State
         /// <param name="oldState">Old state in the collection</param>
         /// <param name="newState">New state</param>
         /// <returns>True if for success then false</returns>
-        public bool Replace(YnState oldState, YnState newState)
+        public bool Replace(ScreenState oldState, ScreenState newState)
         {
             int index = _states.IndexOf(oldState);
 
@@ -239,7 +238,7 @@ namespace Yna.Engine.State
         {
             if (_statesDictionary.ContainsKey(name))
             {
-                YnState activableState = _states[_statesDictionary[name]] as YnState;
+                ScreenState activableState = _states[_statesDictionary[name]] as ScreenState;
                 activableState.Active = true;
 
                 if (desactiveOtherScreens)
@@ -260,10 +259,10 @@ namespace Yna.Engine.State
         /// </summary>
         /// <param name="name">The name used by the state</param>
         /// <returns>The state if exists otherwise return null</returns>
-        public YnState GetStateByName(string name)
+        public ScreenState GetStateByName(string name)
         {
             if (_statesDictionary.ContainsKey(name))
-                return _states[_statesDictionary[name]] as YnState;
+                return _states[_statesDictionary[name]] as ScreenState;
 
             return null;
         }
@@ -301,7 +300,7 @@ namespace Yna.Engine.State
         /// Add a new state to the manager. The screen is not activated or desactivated, you must manage it yourself
         /// </summary>
         /// <param name="state">Screen to add</param>
-        public void Add(YnState state)
+        public void Add(ScreenState state)
         {
             state.StateManager = this;
             state.SpriteBatch = _spriteBatch;
@@ -321,7 +320,7 @@ namespace Yna.Engine.State
         /// </summary>
         /// <param name="screen"></param>
         /// <param name="active"></param>
-        public void Add(YnState state, bool isActive)
+        public void Add(ScreenState state, bool isActive)
         {
             if (state.Active != isActive)
             {
@@ -336,7 +335,7 @@ namespace Yna.Engine.State
         /// Remove a screen to the Manager
         /// </summary>
         /// <param name="screen">Screen to remove</param>
-        public void Remove(YnState state)
+        public void Remove(ScreenState state)
         {
             _states.Remove(state);
             _statesDictionary.Remove(state.Name);
@@ -359,7 +358,7 @@ namespace Yna.Engine.State
 
         public IEnumerator GetEnumerator()
         {
-            foreach (YnState screen in _states)
+            foreach (ScreenState screen in _states)
                 yield return screen;
         }
 

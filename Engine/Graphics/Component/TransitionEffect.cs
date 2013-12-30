@@ -139,7 +139,7 @@ namespace Yna.Engine.Graphics.Component
         /// Update transitions
         /// </summary>
         /// <param name="gameTime">GameTime</param>
-        internal override void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
             if (_transitionState == TransitionEffectState.FadeIn)
             {

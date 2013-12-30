@@ -18,7 +18,7 @@ namespace Yna.Engine
     {
         protected GraphicsDeviceManager graphics = null;
         protected SpriteBatch spriteBatch = null;
-        protected StateManager stateManager = null;
+        protected YnStateManager stateManager = null;
         public static string GameTitle = "Yna Game";
         public static string GameVersion = "1.0.0.0";
 
@@ -33,7 +33,7 @@ namespace Yna.Engine
         {
             this.graphics = new GraphicsDeviceManager(this);
             this.Content.RootDirectory = "Content";
-            this.stateManager = new StateManager(this);
+            this.stateManager = new YnStateManager(this);
 
             YnKeyboard keyboardComponent = new YnKeyboard(this);
             YnMouse mouseComponent = new YnMouse(this);
@@ -60,8 +60,7 @@ namespace Yna.Engine
 #if !ANDROID
             this.Window.Title = String.Format("{0} - v{1}", GameTitle, GameVersion);
 #endif
-            YnScreen.ReferenceWidth = graphics.PreferredBackBufferWidth;
-            YnScreen.ReferenceHeight = graphics.PreferredBackBufferHeight;
+            YnScreen.Setup(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight, false);
 
 #if WINDOWS_PHONE_7
             // 30 FPS for Windows Phone 7

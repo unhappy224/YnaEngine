@@ -112,18 +112,18 @@ namespace Yna.Engine.Graphics.Component
             _maxVelocity = 1.0f;
         }
 
-        internal override void Initialize()
+        public override void Initialize()
         {
             _gameViewport = new Rectangle(0, 0, YnG.Width, YnG.Height);
         }
 
-        internal override void Update(Microsoft.Xna.Framework.GameTime gameTime)
+        public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
         {
             Sprite.Translate(_velocity * _acceleration);
             _velocity *= _maxVelocity;
         }
 
-        internal override void PostUpdate(GameTime gameTime)
+        public override void PostUpdate(GameTime gameTime)
         {
             if (_forceInsideScreen)
             {

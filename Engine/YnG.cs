@@ -48,7 +48,7 @@ namespace Yna.Engine
         /// <summary>
         /// Gets or Set the State Manager
         /// </summary>
-        public static StateManager StateManager { get; set; }
+        public static YnStateManager StateManager { get; set; }
 
         /// <summary>
         /// Gets or Set the audio manager
