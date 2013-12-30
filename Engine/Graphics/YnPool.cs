@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Yna.Engine.Graphics
 {
-    public class YnPool : YnGameEntity
+    public class YnPool : YnGameObject
     {
         private readonly int _maximumPoolSize;
         private YnSprite[] _poolEntities;

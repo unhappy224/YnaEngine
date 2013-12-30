@@ -84,30 +84,16 @@ namespace Yna.Engine
         /// </summary>
         public static YnTouch Touch { get; set; }
 
-        public static bool ShowMouse
-        {
-            get { return Game.IsMouseVisible; }
-            set { Game.IsMouseVisible = value; }
-        }
-
-        
-
         #endregion
 
-        #region Screen size and screen management
+        #region Screen size
 
         /// <summary>
         /// Gets the width of the current viewport
         /// </summary>
         public static int Width
         {
-            get
-            {
-                if (GraphicsDeviceManager != null)
-                    return GraphicsDeviceManager.PreferredBackBufferWidth;
-
-                return Game.GraphicsDevice.Viewport.Width;
-            }
+            get { return YnScreen.Width; }
         }
 
         /// <summary>
@@ -115,65 +101,7 @@ namespace Yna.Engine
         /// </summary>
         public static int Height
         {
-            get
-            {
-                if (GraphicsDeviceManager != null)
-                    return GraphicsDeviceManager.PreferredBackBufferHeight;
-
-                return Game.GraphicsDevice.Viewport.Height;
-            }
-        }
-
-        /// <summary>
-        /// Gets the rectangle that represent the screen size
-        /// </summary>
-        public static Rectangle ScreenRectangle
-        {
-            get { return new Rectangle(0, 0, YnG.Game.GraphicsDevice.Viewport.Width, YnG.Game.GraphicsDevice.Viewport.Height); }
-        }
-
-        /// <summary>
-        /// Gets the center of the screen on X axis
-        /// </summary>
-        public static int ScreenCenterX
-        {
-#if !ANDROID && !WINDOWS_PHONE_7 && !WINDOWS_PHONE_8
-            get { return Game.Window.ClientBounds.Width / 2; }
-#else
-			get { return YnG.Width / 2; }
-#endif
-        }
-
-        /// <summary>
-        /// Gets the center of the screen on Y axis
-        /// </summary>
-        public static int ScreenCenterY
-        {
-#if !ANDROID && !WINDOWS_PHONE_7 && !WINDOWS_PHONE_8
-            get { return Game.Window.ClientBounds.Height / 2; }
-#else
-			get { return YnG.Height / 2; }
-#endif
-        }
-
-
-        /// <summary>
-        /// Change the screen resolution
-        /// </summary>
-        /// <param name="width">Screen width</param>
-        /// <param name="height">Screen height</param>
-        public static void SetScreenResolution(int width, int height)
-        {
-            (Game as YnGame).SetScreenResolution(width, height);
-        }
-
-        /// <summary>
-        /// Set the screen resolution to the same resolution used on desktop
-        /// </summary>
-        /// <param name="fullscreen"></param>
-        public static void DetermineBestResolution(bool fullscreen)
-        {
-            (Game as YnGame).DetermineBestResolution(true);
+            get { return YnScreen.Height; }
         }
 
         #endregion

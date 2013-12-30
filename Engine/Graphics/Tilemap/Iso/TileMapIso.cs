@@ -4,7 +4,6 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Yna.Engine.Helpers;
 
 namespace Yna.Engine.Graphics.TileMap.Isometric
 {

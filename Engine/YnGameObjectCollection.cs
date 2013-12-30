@@ -9,7 +9,7 @@ namespace Yna.Engine
     /// <summary>
     /// A collection of updateable and drawable game entities who is safe.
     /// </summary>
-    public class YnGameEntityCollection : YnCollection<YnGameEntity>
+    public class YnGameObjectCollection : YnCollection<YnGameObject>
     {
         /// <summary>
         /// Initialize logic.

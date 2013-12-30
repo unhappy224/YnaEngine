@@ -10,7 +10,7 @@ namespace Yna.Engine
     /// <summary>
     /// Represent an updateable and drawable entity
     /// </summary>
-    public abstract class YnGameEntity : YnBasicEntity
+    public abstract class YnGameObject : YnBasicObject
     {
         protected bool _assetLoaded;
         protected bool _initialized;
@@ -96,7 +96,7 @@ namespace Yna.Engine
         /// <summary>
         /// Create game entity that is updateable and drawable.
         /// </summary>
-        public YnGameEntity()
+        public YnGameObject()
             : base()
         {
             _assetLoaded = false;
@@ -108,36 +108,24 @@ namespace Yna.Engine
         /// <summary>
         /// Initialize the logic.
         /// </summary>
-        public virtual void Initialize()
-        {
-            _initialized = true;
-        }
+        public virtual void Initialize() { }
 
         /// <summary>
         /// Load assets
         /// </summary>
         /// <param name="content">The content manager.</param>
-        public virtual void LoadContent()
-        {
-            _assetLoaded = true;
-        }
+        public virtual void LoadContent() { }
 
         /// <summary>
         /// Unload assets and free memory.
         /// </summary>
-        public virtual void UnloadContent()
-        {
-            _assetLoaded = false;
-        }
+        public virtual void UnloadContent() { }
 
         /// <summary>
         /// Draw entity on screen.
         /// </summary>
         /// <param name="gameTime"></param>
         /// <param name="spriteBatch">A SpriteBatch to draw this entity.</param>
-        public virtual void Draw(GameTime gameTime, SpriteBatch spriteBatch)
-        {
-
-        }
+        public virtual void Draw(GameTime gameTime, SpriteBatch spriteBatch) { }
     }
 }

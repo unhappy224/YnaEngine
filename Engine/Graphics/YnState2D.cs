@@ -13,7 +13,7 @@ namespace Yna.Engine.Graphics
     /// <summary>
     /// A configuration structure used when rendering scene with sprite batch.
     /// </summary>
-    public struct SpriteBatchConfiguration
+    public struct SpriteBatchParameters
     {
         public SpriteSortMode SpriteSortMode;
         public BlendState BlendState;
@@ -31,15 +31,15 @@ namespace Yna.Engine.Graphics
     public class YnState2D : YnState
     {
         protected YnScene _scene;
-        protected SpriteBatchConfiguration _spriteBatchConfig;
-        protected YnCamera2D _camera;
+        protected SpriteBatchParameters _batchParams;
+        protected ViewportCamera _camera;
 
         #region Properties
 
         /// <summary>
         /// Gets basic objects
         /// </summary>
-        public List<YnBasicEntity> BasicEntities
+        public List<YnBasicObject> BasicEntities
         {
             get { return _scene.BaseObjects; }
         }
@@ -47,7 +47,7 @@ namespace Yna.Engine.Graphics
         /// <summary>
         /// Gets members attached to the scene
         /// </summary>
-        public List<YnGameEntity> GameEntities
+        public List<YnGameObject> GameEntities
         {
             get { return _scene.Entities; }
         }
@@ -55,17 +55,17 @@ namespace Yna.Engine.Graphics
         /// <summary>
         /// Gets or sets the configuration used for sprite batch.
         /// </summary>
-        public SpriteBatchConfiguration SpriteBatchConfiguration
+        public SpriteBatchParameters SpriteBatchConfiguration
         {
-            get { return _spriteBatchConfig; }
-            set { _spriteBatchConfig = value; }
+            get { return _batchParams; }
+            set { _batchParams = value; }
         }
 
         /// <summary>
         /// Gets or sets the spriteBatchCamera used for add effect on the scene like 
         /// displacement, rotation and zoom
         /// </summary>
-        public YnCamera2D Camera
+        public ViewportCamera Camera
         {
             get { return _camera; }
             set { _camera = value; }
@@ -118,7 +118,7 @@ namespace Yna.Engine.Graphics
         /// </summary>
         private void InitializeDefaultState()
         {
-            _spriteBatchConfig = new SpriteBatchConfiguration()
+            _batchParams = new SpriteBatchParameters()
             {
                 SpriteSortMode = SpriteSortMode.Deferred,
                 BlendState = BlendState.AlphaBlend,
@@ -128,7 +128,7 @@ namespace Yna.Engine.Graphics
                 Effect = null
             };
 
-            _camera = new YnCamera2D();
+            _camera = new ViewportCamera();
         }
 
         #region GameState pattern
@@ -180,7 +180,6 @@ namespace Yna.Engine.Graphics
         /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
-            _camera.Update(gameTime);
             _scene.Update(gameTime);
         }
 
@@ -195,12 +194,12 @@ namespace Yna.Engine.Graphics
             if (nbMembers > 0)
             {
                 spriteBatch.Begin(
-                    _spriteBatchConfig.SpriteSortMode,
-                    _spriteBatchConfig.BlendState,
-                    _spriteBatchConfig.SamplerState,
-                    _spriteBatchConfig.DepthStencilState,
-                    _spriteBatchConfig.RasterizerState,
-                    _spriteBatchConfig.Effect,
+                    _batchParams.SpriteSortMode,
+                    _batchParams.BlendState,
+                    _batchParams.SamplerState,
+                    _batchParams.DepthStencilState,
+                    _batchParams.RasterizerState,
+                    _batchParams.Effect,
                     _camera.GetTransformMatrix());
                 _scene.Draw(gameTime, spriteBatch);
                 spriteBatch.End();
@@ -215,7 +214,7 @@ namespace Yna.Engine.Graphics
         /// Add a basic object to the scene
         /// </summary>
         /// <param name="basicObject">A basic object</param>
-        public void Add(YnBasicEntity basicObject)
+        public void Add(YnBasicObject basicObject)
         {
             _scene.Add(basicObject);
         }
@@ -239,7 +238,7 @@ namespace Yna.Engine.Graphics
         /// Remove a basic object to the scene
         /// </summary>
         /// <param name="basicObject">A basic object</param>
-        public void Remove(YnBasicEntity basicObject)
+        public void Remove(YnBasicObject basicObject)
         {
             _scene.Remove(basicObject);
         }
@@ -253,7 +252,7 @@ namespace Yna.Engine.Graphics
             _scene.Remove(entity);
         }
 
-        public YnBasicEntity GetMemberByName(string name)
+        public YnBasicObject GetMemberByName(string name)
         {
             return _scene.GetMemberByName(name);
         }

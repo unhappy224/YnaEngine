@@ -16,7 +16,7 @@ namespace Yna.Engine.Script
     /// Animation process can be controlled at any time to stop, restart, pause or resume the
     /// script processing.
     /// </summary>
-    public class ScriptAnimator : YnBasicEntity
+    public class ScriptAnimator : YnBasicObject
     {
         #region Attributes
 

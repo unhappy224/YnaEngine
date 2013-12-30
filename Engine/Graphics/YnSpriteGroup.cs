@@ -16,7 +16,7 @@ namespace Yna.Engine.Graphics
     {
         #region Private declarations
 
-        protected YnGameEntityCollection _entitiesList;
+        protected YnGameObjectCollection _entitiesList;
         private bool _assetsLoaded;
 
         #endregion
@@ -26,7 +26,7 @@ namespace Yna.Engine.Graphics
         /// <summary>
         /// Members of the group
         /// </summary>
-        public List<YnGameEntity> Members
+        public List<YnGameObject> Members
         {
             get { return _entitiesList.Members; }
         }
@@ -224,7 +224,7 @@ namespace Yna.Engine.Graphics
 
         public YnSpriteGroup(int capacity)
         {
-            _entitiesList = new YnGameEntityCollection();
+            _entitiesList = new YnGameObjectCollection();
             _initialized = false;
             _assetsLoaded = false;
             _entitiesList.SecureCycle = true;
@@ -354,7 +354,7 @@ namespace Yna.Engine.Graphics
 
         public YnSprite GetChildByName(string name)
         {
-            YnGameEntity result = null;
+            YnGameObject result = null;
             int i = 0;
             while (i < Count && result == null)
             {

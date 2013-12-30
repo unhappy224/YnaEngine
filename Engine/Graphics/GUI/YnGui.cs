@@ -9,7 +9,6 @@ using System.Collections;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Yna.Engine.Graphics.Gui.Widgets;
-using Yna.Engine.Helpers;
 
 namespace Yna.Engine.Graphics.Gui
 {

@@ -4,28 +4,33 @@
 using System;
 using Microsoft.Xna.Framework;
 
-namespace Yna.Engine.Graphics.Animation
+namespace Yna.Engine.Graphics.Component
 {
     /// <summary>
     /// A Shake effect for a SpriteBatchCamera
     /// </summary>
-    public class YnShakeEffect : YnBasicEntity, IEffectAnimation
+    public class ShakeEffect : SpriteComponent
     {
-        protected static readonly Random random = new Random();
-        protected bool _shaking;
-        protected float _shakeMagnitude;
-        protected float _shakeDuration;
-        protected float _shakeTimer;
-        protected Vector3 _shakeOffset;
-        protected YnCamera2D _camera;
+        private static readonly Random random = new Random();
+        private bool _shaking;
+        private float _shakeMagnitude;
+        private float _shakeDuration;
+        private float _shakeTimer;
+        private Vector3 _shakeOffset;
+        private ViewportCamera _camera;
 
-        public YnShakeEffect(YnCamera2D camera)
+        public ShakeEffect()
         {
             _shaking = false;
             _shakeMagnitude = 0.0f;
             _shakeDuration = 0.0f;
             _shakeTimer = 0.0f;
             _shakeOffset = Vector3.Zero;
+        }
+
+        public ShakeEffect(ViewportCamera camera)
+            : this()
+        {
             _camera = camera;
         }
 
@@ -48,10 +53,8 @@ namespace Yna.Engine.Graphics.Animation
             if (!_shaking)
             {
                 _shaking = true;
-
                 _shakeMagnitude = magnitude;
                 _shakeDuration = duration;
-
                 _shakeTimer = 0.0f;
             }
         }
@@ -60,7 +63,7 @@ namespace Yna.Engine.Graphics.Animation
         /// Update the effect
         /// </summary>
         /// <param name="gameTime"></param>
-        public override void Update(GameTime gameTime)
+        internal override void Update(GameTime gameTime)
         {
             if (_shaking)
             {
@@ -76,11 +79,9 @@ namespace Yna.Engine.Graphics.Animation
                 else
                 {
                     float progress = _shakeTimer / _shakeDuration;
-
                     float magnitude = _shakeMagnitude * (1.0f - (progress * progress));
 
                     _shakeOffset = new Vector3(NextFloat(), NextFloat(), NextFloat()) * magnitude;
-
                     _camera.X += (int)_shakeOffset.X;
                     _camera.Y += (int)_shakeOffset.Y;
                 }

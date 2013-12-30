@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
-using Yna.Engine.Helpers;
 using Yna.Engine.Graphics.Event;
 using Yna.Engine.Graphics.Component;
 

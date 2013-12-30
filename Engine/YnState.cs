@@ -11,18 +11,18 @@ namespace Yna.Engine.State
     /// A basic state used with the state manager
     /// A state represents a game screen as a menu, a scene or a score screen.
     /// </summary>
-    public abstract class YnState : YnGameEntity
+    public abstract class YnState : YnGameObject
     {
-        #region Private declarations
-
         private static int ScreenCounter = 0;
-        protected bool _reinitializeAfterActivation;
         protected SpriteBatch spriteBatch;
         protected StateManager stateManager;
 
-        #endregion
 
-        #region Properties
+        public SpriteBatch SpriteBatch
+        {
+            get { return spriteBatch; }
+            internal set { spriteBatch = value; }
+        }
 
         /// <summary>
         /// Gets or sets the Screen Manager
@@ -36,8 +36,6 @@ namespace Yna.Engine.State
                 spriteBatch = value.SpriteBatch;
             }
         }
-
-        #endregion
 
         #region Events
 
@@ -79,10 +77,6 @@ namespace Yna.Engine.State
             : base()
         {
             _name = "State_" + (ScreenCounter++);
-            _reinitializeAfterActivation = true;
-            _enabled = true;
-            _visible = true;
-            _assetLoaded = false;
         }
 
         public YnState(string name)
@@ -93,55 +87,17 @@ namespace Yna.Engine.State
 
         #endregion
 
-        public override void Initialize()
-        {
-            base.Initialize();
-            if (!_initialized)
-                _initialized = true;
-        }
-
-        /// <summary>
-        /// Load state content.
-        /// </summary>
-        public override void LoadContent()
-        {
-            if (!_assetLoaded)
-            {
-                spriteBatch = new SpriteBatch(stateManager.Game.GraphicsDevice);
-                _assetLoaded = true;
-
-            }
-        }
-
-        /// <summary>
-        /// Unload state content.
-        /// </summary>
-        public override void UnloadContent()
-        {
-            if (_assetLoaded)
-            {
-                spriteBatch.Dispose();
-                _assetLoaded = false;
-            }
-        }
-
         /// <summary>
         /// Draw the state on screen.
         /// </summary>
         /// <param name="gameTime"></param>
         public abstract void Draw(GameTime gameTime);
 
-        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
-        {
-            Draw(gameTime);
-        }
-
         /// <summary>
         /// Quit the state and remove it from the ScreenManager
         /// </summary>
         public virtual void Kill()
         {
-            UnloadContent();
             stateManager.Remove(this);
         }
     }

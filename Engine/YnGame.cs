@@ -6,7 +6,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Yna.Engine.Audio;
 using Yna.Engine.State;
-using Yna.Engine.Helpers;
 using Yna.Engine.Input;
 using Yna.Engine.Storage;
 
@@ -61,8 +60,8 @@ namespace Yna.Engine
 #if !ANDROID
             this.Window.Title = String.Format("{0} - v{1}", GameTitle, GameVersion);
 #endif
-            ScreenHelper.ScreenWidthReference = graphics.PreferredBackBufferWidth;
-            ScreenHelper.ScreenHeightReference = graphics.PreferredBackBufferHeight;
+            YnScreen.ReferenceWidth = graphics.PreferredBackBufferWidth;
+            YnScreen.ReferenceHeight = graphics.PreferredBackBufferHeight;
 
 #if WINDOWS_PHONE_7
             // 30 FPS for Windows Phone 7
@@ -74,26 +73,18 @@ namespace Yna.Engine
         }
 
         public YnGame(int width, int height, string title)
-            : this()
+            : this(width, height, width, height, title) 
         {
-#if XNA || MONOGAME && (OPENGL || DIRECTX || LINUX || MACOSX) ||SDL2
-            SetScreenResolution(width, height);
-          
-            this.Window.Title = title;
 
-            ScreenHelper.ScreenWidthReference = width;
-            ScreenHelper.ScreenHeightReference = height;
-#endif
         }
 
-        public YnGame(int width, int height, string title, bool useStateManager)
-            : this(width, height, title)
+        public YnGame(int width, int height, int referenceWidth, int referenceHeight, string title)
+            : this()
         {
-            if (!useStateManager)
-            {
-                this.stateManager.Enabled = false;
-                this.Components.Remove(this.stateManager);
-            }
+#if !WINDOWS_PHONE && !ANDROID
+            YnScreen.Setup(width, height, referenceWidth, referenceHeight, true);
+            this.Window.Title = title;
+#endif
         }
 
         #endregion
@@ -116,41 +107,7 @@ namespace Yna.Engine
         protected override void UnloadContent()
         {
             base.UnloadContent();
-
             YnG.AudioManager.Dispose();
-        }
-
-        protected override void Draw(GameTime gameTime)
-        {
-            base.Draw(gameTime);
-        }
-
-        #endregion
-
-        #region Resolution setup
-
-        /// <summary>
-        /// Change the screen resolution
-        /// </summary>
-        /// <param name="width">Screen width</param>
-        /// <param name="height">Screen height</param>
-        public virtual void SetScreenResolution(int width, int height)
-        {
-            this.graphics.PreferredBackBufferWidth = width;
-            this.graphics.PreferredBackBufferHeight = height;
-            this.graphics.ApplyChanges();
-        }
-
-        /// <summary>
-        /// Set maximum resolution supported by the device, It use the desktop resolution
-        /// </summary>
-        /// <param name="fullscreen">Toggle in fullscreen mode</param>
-        public virtual void DetermineBestResolution(bool fullscreen)
-        {
-            SetScreenResolution(GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width, GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height);
-
-            if (!graphics.IsFullScreen && fullscreen)
-                graphics.ToggleFullScreen();
         }
 
         #endregion

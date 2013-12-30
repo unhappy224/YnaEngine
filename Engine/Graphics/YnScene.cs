@@ -10,20 +10,20 @@ namespace Yna.Engine.Graphics.Scene
     /// <summary>
     /// Represent an abstract scene with a collection of basic objects like timers and nothing else
     /// </summary>
-    public class YnScene : YnGameEntity
+    public class YnScene : YnGameObject
     {
         protected YnBasicCollection _baseList;
-        protected YnGameEntityCollection _entities;
+        protected YnGameObjectCollection _entities;
 
         /// <summary>
         /// Gets or sets basic objects
         /// </summary>
-        public List<YnBasicEntity> BaseObjects
+        public List<YnBasicObject> BaseObjects
         {
             get { return _baseList.Members; }
         }
 
-        public List<YnGameEntity> Entities
+        public List<YnGameObject> Entities
         {
             get { return _entities.Members; }
         }
@@ -32,7 +32,7 @@ namespace Yna.Engine.Graphics.Scene
         public YnScene()
         {
             _baseList = new YnBasicCollection();
-            _entities = new YnGameEntityCollection();
+            _entities = new YnGameObjectCollection();
         }
 
         public override void Initialize()
@@ -72,12 +72,12 @@ namespace Yna.Engine.Graphics.Scene
         /// Add a basic object
         /// </summary>
         /// <param name="basicObject">A basic object</param>
-        public virtual void Add(YnBasicEntity basicObject)
+        public virtual void Add(YnBasicObject basicObject)
         {
             _baseList.Add(basicObject);
         }
 
-        public virtual void Add(YnGameEntity entity)
+        public virtual void Add(YnGameObject entity)
         {
             _entities.Add(entity);
         }
@@ -86,7 +86,7 @@ namespace Yna.Engine.Graphics.Scene
         /// Remove a basic object
         /// </summary>
         /// <param name="basicObject">A basic object</param>
-        public virtual void Remove(YnBasicEntity basicObject)
+        public virtual void Remove(YnBasicObject basicObject)
         {
             _baseList.Remove(basicObject);
         }
@@ -107,9 +107,9 @@ namespace Yna.Engine.Graphics.Scene
         /// </summary>
         /// <param name="name">Name of the object</param>
         /// <returns>An YnBase object or null if don't exists</returns>
-        public virtual YnBasicEntity GetMemberByName(string name)
+        public virtual YnBasicObject GetMemberByName(string name)
         {
-            YnBasicEntity basicEntity = null;
+            YnBasicObject basicEntity = null;
 
             int baseSize = _baseList.Count;
             int i = 0;

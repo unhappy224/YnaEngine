@@ -24,7 +24,7 @@ namespace Yna.Engine.Graphics
     /// <summary>
     /// Define a drawable 2D object
     /// </summary>
-    public class YnSprite : YnGameEntity, ICollidable2
+    public class YnSprite : YnGameObject, ICollidable2
     {
         #region Protected declarations
 

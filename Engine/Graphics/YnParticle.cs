@@ -4,7 +4,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Yna.Engine.Graphics.Particle
+namespace Yna.Engine.Graphics
 {
     /// <summary>
     /// Define a configuration for a particle.
@@ -68,26 +68,26 @@ namespace Yna.Engine.Graphics.Particle
             _lifeTime = configuration.LifeTime;
         }
 
-        public void AddPosition(int x, int y)
+        public void Translate(int x, int y)
         {
             _rectangle.X += x;
             _rectangle.Y += y;
         }
 
-        public void AddPosition(Vector2 position)
+        public void Translate(Vector2 position)
         {
-            AddPosition((int)position.X, (int)position.Y);
+            Translate((int)position.X, (int)position.Y);
         }
 
-        public void SetPosition(int x, int y)
+        public void Move(int x, int y)
         {
             _rectangle.X = x;
             _rectangle.Y = y;
         }
 
-        public void SetPosition(Vector2 position)
+        public void Move(Vector2 position)
         {
-            SetPosition((int)position.X, (int)position.Y);
+            Move((int)position.X, (int)position.Y);
         }
 
         /// <summary>

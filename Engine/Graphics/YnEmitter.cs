@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Yna.Engine.Graphics.Particle
+namespace Yna.Engine.Graphics
 {
     /// <summary>
     /// An particle emitter.
@@ -189,7 +189,7 @@ namespace Yna.Engine.Graphics.Particle
             foreach (YnParticle particle in _particles)
             {
                 particle.Revive();
-                particle.SetPosition(_position);
+                particle.Move(_position);
                 particle.Active = false;
             }
             _activeParticleIndex = 0;
@@ -218,8 +218,8 @@ namespace Yna.Engine.Graphics.Particle
             _position.X = x;
             _position.Y = y;
 
-            foreach (YnParticle particle in _particles)
-                particle.AddPosition(rx, ry);
+            for (int i = 0, l = _particles.Count; i < l; i++)
+                _particles[i].Translate(rx, ry);
         }
 
         private int GetNextParticleIndex()

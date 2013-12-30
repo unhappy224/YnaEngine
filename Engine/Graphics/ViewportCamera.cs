@@ -2,7 +2,9 @@
 // This file is subject to the terms and conditions defined in
 // file 'LICENSE', which is part of this source code package.
 using Microsoft.Xna.Framework;
+using System.Collections.Generic;
 using Yna.Engine.Graphics.Animation;
+using Yna.Engine.Graphics.Component;
 
 namespace Yna.Engine.Graphics
 {
@@ -10,21 +12,15 @@ namespace Yna.Engine.Graphics
     /// A simple camera used on the scene to make different type of effects.
     /// Position, Rotation and Zoom can be applied on the scene.
     /// </summary>
-    public class YnCamera2D : YnBasicEntity
+    public class ViewportCamera
     {
         // Avoid garbage generation because we use it on each update.
         private Matrix _originMatrix;
         private Matrix _rotationMatrix;
         private Matrix _zoomMatrix;
         private Matrix _translationMatrix;
-        
-        // Screen center
-        protected Vector2 _centerScreen;
-
-        // Effects
-        protected YnShakeEffect _shakeEffect;
-
-        #region Properties
+        private Matrix _cacheResult;
+        private Vector2 _screenCenter;
 
         /// <summary>
         /// X position
@@ -46,43 +42,16 @@ namespace Yna.Engine.Graphics
         /// </summary>
         public float Zoom;
 
-        #endregion
-
-        #region Constructors
-
         /// <summary>
         /// Create a camera for the scene
         /// </summary>
-        public YnCamera2D()
+        public ViewportCamera()
         {
             X = 0;
             Y = 0;
             Rotation = 0.0f;
             Zoom = 1.0f;
-
-            _centerScreen = new Vector2(YnG.Width / 2, YnG.Height / 2);
-            _shakeEffect = new YnShakeEffect(this);
-        }
-
-        #endregion
-
-        /// <summary>
-        /// Shake the camera
-        /// </summary>
-        /// <param name="magnitude">Desired magnitude</param>
-        /// <param name="duration">Desired duration</param>
-        public void Shake(float magnitude, long duration)
-        {
-            _shakeEffect.Shake(magnitude, duration);
-        }
-
-        /// <summary>
-        /// Update the camera
-        /// </summary>
-        /// <param name="gameTime"></param>
-        public override void Update(GameTime gameTime)
-        {
-            _shakeEffect.Update(gameTime);
+            _screenCenter = new Vector2(YnG.Width / 2, YnG.Height / 2);
         }
 
         /// <summary>
@@ -95,8 +64,9 @@ namespace Yna.Engine.Graphics
             _rotationMatrix = Matrix.CreateRotationZ(MathHelper.ToRadians(Rotation));
             _zoomMatrix = Matrix.CreateScale(Zoom);
             _translationMatrix = Matrix.CreateTranslation(X + (YnG.Width / 2), Y + (YnG.Height / 2), 0);
+            _cacheResult = _zoomMatrix * _originMatrix * _rotationMatrix * _translationMatrix;
 
-            return (_zoomMatrix * _originMatrix * _rotationMatrix * _translationMatrix);
+            return _cacheResult;
         }
     }
 }

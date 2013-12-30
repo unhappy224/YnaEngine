@@ -3,10 +3,11 @@
 // file 'LICENSE', which is part of this source code package.
 using System;
 using Microsoft.Xna.Framework;
+using Yna.Engine.Graphics.Component;
 
-namespace Yna.Engine.Graphics.Animation
+namespace Yna.Engine.Graphics.Component
 {
-    public enum TransitionState
+    public enum TransitionEffectState
     {
         On = 0, Off = 1, FadeIn, FadeOut
     }
@@ -14,9 +15,9 @@ namespace Yna.Engine.Graphics.Animation
     /// <summary>
     /// Simple transition effect
     /// </summary>
-    public class YnTransitionEffect : YnBasicEntity, IEffectAnimation
+    public class TransitionEffect : SpriteComponent
     {
-        private TransitionState _transitionState;
+        private TransitionEffectState _transitionState;
         private float _timeTransitionOn;
         private float _timeTransitionOff;
         private float _timeTransitionCounter;
@@ -35,7 +36,7 @@ namespace Yna.Engine.Graphics.Animation
         /// <summary>
         /// Get the current status of the transition
         /// </summary>
-        public TransitionState TransitionState
+        public TransitionEffectState TransitionState
         {
             get { return _transitionState; }
         }
@@ -51,7 +52,6 @@ namespace Yna.Engine.Graphics.Animation
             get { return _alphaMin; }
             set { _alphaMin = value; }
         }
-
 
         #region Events
 
@@ -111,38 +111,41 @@ namespace Yna.Engine.Graphics.Animation
 
         #endregion
 
-
         /// <summary>
         /// Create a transition alpha effect
         /// </summary>
         /// <param name="fadeInTime">Duration of the start transition</param>
         /// <param name="fadeOutTime">Duration of the end transition</param>
-        public YnTransitionEffect(float fadeInTime, float fadeOutTime)
+        public TransitionEffect(float fadeInTime, float fadeOutTime)
         {
-            _transitionState = TransitionState.Off;
+            _transitionState = TransitionEffectState.Off;
             _timeTransitionOn = fadeInTime;
             _timeTransitionOff = fadeOutTime;
             _alphaMin = 0.0f;
             _alphaMax = 1.0f;
         }
 
-        public YnTransitionEffect(float fadeTime)
+        public TransitionEffect(float fadeTime)
             : this(fadeTime, fadeTime)
         {
+        }
 
+        public TransitionEffect()
+            : this(0, 0)
+        {
         }
 
         /// <summary>
         /// Update transitions
         /// </summary>
         /// <param name="gameTime">GameTime</param>
-        public override void Update(GameTime gameTime)
+        internal override void Update(GameTime gameTime)
         {
-            if (_transitionState == TransitionState.FadeIn)
+            if (_transitionState == TransitionEffectState.FadeIn)
             {
                 if (UpdateTransition(gameTime, _timeTransitionOn, -1))
                 {
-                    _transitionState = TransitionState.On;
+                    _transitionState = TransitionEffectState.On;
                     OnTransitionFinished(EventArgs.Empty, true);
                 }
                 else
@@ -151,11 +154,11 @@ namespace Yna.Engine.Graphics.Animation
                 }
             }
 
-            else if (_transitionState == TransitionState.FadeOut)
+            else if (_transitionState == TransitionEffectState.FadeOut)
             {
                 if (UpdateTransition(gameTime, _timeTransitionOff, 1))
                 {
-                    _transitionState = TransitionState.Off;
+                    _transitionState = TransitionEffectState.Off;
                     OnTransitionFinished(EventArgs.Empty, false);
                 }
                 else
@@ -170,7 +173,7 @@ namespace Yna.Engine.Graphics.Animation
         /// </summary>
         public void StartFadeIn()
         {
-            ChangeTransitionState(TransitionState.FadeIn);
+            ChangeTransitionState(TransitionEffectState.FadeIn);
         }
 
         /// <summary>
@@ -178,7 +181,7 @@ namespace Yna.Engine.Graphics.Animation
         /// </summary>
         public void StartFadeOut()
         {
-            ChangeTransitionState(TransitionState.FadeOut);
+            ChangeTransitionState(TransitionEffectState.FadeOut);
         }
         
         /// <summary>
@@ -186,15 +189,15 @@ namespace Yna.Engine.Graphics.Animation
         /// Values are set to default
         /// </summary>
         /// <param name="newState"></param>
-        public void ChangeTransitionState(TransitionState newState)
+        public void ChangeTransitionState(TransitionEffectState newState)
         {
-            if (newState == TransitionState.FadeIn)
+            if (newState == TransitionEffectState.FadeIn)
             {
                 _timeTransitionCounter = 0;
                 _transitionAlpha = 0.0f;
                 OnTransitionStarted(EventArgs.Empty, true);
             }
-            else if (newState == TransitionState.FadeOut)
+            else if (newState == TransitionEffectState.FadeOut)
             {
                 _timeTransitionCounter = _timeTransitionOff;
                 _transitionAlpha = 1.0f;
