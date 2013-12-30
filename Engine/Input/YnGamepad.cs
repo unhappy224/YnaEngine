@@ -6,7 +6,6 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Yna.Engine.Input
 {
-#if !WINDOWS_PHONE_8
     public class YnGamepad : GameComponent
     {
         GamePadState [] state;
@@ -242,49 +241,4 @@ namespace Yna.Engine.Input
 
         #endregion
     }
-#else
-    public class GamepadComponent : GameComponent
-    {
-        public GamepadComponent(Game game)
-            : base(game)
-        {
-
-        }
-
-        public bool Connected(PlayerIndex index)
-        {
-            return false;
-        }
-
-        public bool Pressed(PlayerIndex index, Buttons button)
-        {
-            return false;
-        }
-
-        public bool Released(PlayerIndex index, Buttons button)
-        {
-            return false;
-        }
-
-        public bool JustPressed(PlayerIndex index, Buttons button)
-        {
-            return false;
-        }
-
-        public bool JustReleased(PlayerIndex index, Buttons button)
-        {
-            return false;
-        }
-
-        public float Triggers(PlayerIndex index, bool left)
-        {
-            return 0.0f;
-        }
-
-        public Vector2 ThumbSticks(PlayerIndex index, bool left)
-        {
-            return Vector2.Zero;
-        }
-    }
-#endif
 }
