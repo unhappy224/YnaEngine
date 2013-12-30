@@ -9,15 +9,14 @@ namespace Yna.Engine.Input.Kinect
     public class KinectSensorController
     {
         private bool _isAvailable;
-
         private float maxX = 0.4f;
         private float maxY = 0.4f;
-        
-        private KinectUserProfile [] _userProfiles;
-
+        private int _screenWidth;
+        private int _screenHeight;
+        private KinectUserProfile _userProfil;
         private KinectSensor _kinectSensor;
-
-        private int _playerCount;
+        private Skeleton[] _cacheSkeletons;
+        private Skeleton _cacheSkeleton;
 
         #region Properties
 
@@ -30,42 +29,42 @@ namespace Yna.Engine.Input.Kinect
             protected set { _isAvailable = value; }
         }
 
-        /// <summary>
-        /// Number of Kinect device
-        /// </summary>
-        private int Count 
+        public KinectUserProfile User
         {
-            get { return KinectSensor.KinectSensors.Count; }
+            get { return _userProfil; }
         }
 
-        /// <summary>
-        /// Get the number of players
-        /// </summary>
-        public int PlayerCount 
+        public float MaxX
         {
-            get { return _playerCount; }
-            protected set { _playerCount = value; }
+            get { return maxX; }
+            set { maxX = value; }
+        }
+
+        public float MaxY
+        {
+            get { return maxY; }
+            set { maxY = value; }
         }
 
         #endregion
 
-        public KinectSensorController()
+        public KinectSensorController(int screenWidth, int screenHeight)
         {
-            _userProfiles = new KinectUserProfile[2];
-            for (int i = 0; i < 2; i++)
-                _userProfiles[i] = new KinectUserProfile();
-
+            SetScreenSize(screenWidth, screenHeight);
             Initialize();
+        }
+
+        public void SetScreenSize(int width, int height)
+        {
+            _screenWidth = width;
+            _screenHeight = height;
         }
 
         private void Initialize()
         {
-            _playerCount = 0;
+            _userProfil = new KinectUserProfile();
 
-            for (int i = 0; i < 2; i++)
-                _userProfiles[i] = new KinectUserProfile();
-
-            if (Count > 0)
+            if (KinectSensor.KinectSensors.Count > 0)
             {
                 // We take the first (for now)
                 _kinectSensor = KinectSensor.KinectSensors[0];
@@ -81,7 +80,6 @@ namespace Yna.Engine.Input.Kinect
                 };
 
                 _kinectSensor.SkeletonStream.Enable(parameters);
-
                 _kinectSensor.SkeletonFrameReady += new EventHandler<SkeletonFrameReadyEventArgs>(kinect_SkeletonFrameReady);
 
                 try
@@ -99,13 +97,6 @@ namespace Yna.Engine.Input.Kinect
                 _isAvailable = false;
         }
 
-        public KinectUserProfile GetUserProfile(KinectPlayerIndex index)
-        {
-            return _userProfiles[(int)index];
-        }
-
-        #region Events
-
         private void kinect_SkeletonFrameReady(object sender, SkeletonFrameReadyEventArgs e)
         {
             using (SkeletonFrame skeletonFrame = e.OpenSkeletonFrame())
@@ -116,60 +107,46 @@ namespace Yna.Engine.Input.Kinect
 
                 int skeletonsSize = skeletonFrame.SkeletonArrayLength;
 
-                Skeleton[] skeletons = new Skeleton[skeletonsSize];
+                _cacheSkeletons = new Skeleton[skeletonsSize];
 
-                skeletonFrame.CopySkeletonDataTo(skeletons);
-
-                int currentPlayer = 0; // Current player
+                skeletonFrame.CopySkeletonDataTo(_cacheSkeletons);
 
                 for (int i = 0; i < skeletonsSize; i++)
                 {
-                    Skeleton sk = skeletons[i];
+                    _cacheSkeleton = _cacheSkeletons[i];
 
-                    if (sk.TrackingState == SkeletonTrackingState.Tracked)
+                    if (_cacheSkeleton.TrackingState == SkeletonTrackingState.Tracked)
                     {
 
-                        if (sk.Joints[JointType.HandLeft].TrackingState == JointTrackingState.Tracked &&
-                            sk.Joints[JointType.HandRight].TrackingState == JointTrackingState.Tracked)
+                        if (_cacheSkeleton.Joints[JointType.HandLeft].TrackingState == JointTrackingState.Tracked &&
+                            _cacheSkeleton.Joints[JointType.HandRight].TrackingState == JointTrackingState.Tracked)
                         {
-                            Joint jointRight = sk.Joints[JointType.HandRight];
-                            Joint jointLeft = sk.Joints[JointType.HandLeft];
+                            Joint jointRight = _cacheSkeleton.Joints[JointType.HandRight];
+                            Joint jointLeft = _cacheSkeleton.Joints[JointType.HandLeft];
 
-                            Joint scaledRight = jointRight;// jointRight.ScaleTo(YnG.DeviceWidth, YnG.DeviceHeight, maxX, maxY);
-                            Joint scaledLeft = jointLeft; // jointLeft.ScaleTo(YnG.DeviceWidth, YnG.DeviceHeight, maxX, maxY);
+                            Joint scaledRight = jointRight.ScaleTo(_screenWidth, _screenHeight, maxX, maxY);
+                            Joint scaledLeft = jointLeft.ScaleTo(_screenWidth, _screenHeight, maxX, maxY);
 
-                            _userProfiles[currentPlayer].SetVector3(scaledLeft.JointType, new Vector3(
+                            _userProfil.SetVector3(scaledLeft.JointType, new Vector3(
                                 scaledLeft.Position.X,
                                 scaledLeft.Position.Y,
                                 scaledLeft.Position.Z));
 
-                            _userProfiles[currentPlayer].SetVector3(scaledRight.JointType, new Vector3(
+                            _userProfil.SetVector3(scaledRight.JointType, new Vector3(
                                scaledRight.Position.X,
                                scaledRight.Position.Y,
                                scaledRight.Position.Z));
                         }
 
-                        _userProfiles[currentPlayer].SetVector3(JointType.Head, new Vector3(
-                            sk.Joints[JointType.Head].Position.X,
-                            sk.Joints[JointType.Head].Position.Y,
-                            sk.Joints[JointType.Head].Position.Z));
+                        _userProfil.SetVector3(JointType.Head, new Vector3(
+                            _cacheSkeleton.Joints[JointType.Head].Position.X,
+                            _cacheSkeleton.Joints[JointType.Head].Position.Y,
+                            _cacheSkeleton.Joints[JointType.Head].Position.Z));
 
-                        _userProfiles[currentPlayer].SetVector3(JointType.FootLeft, new Vector3(
-                            sk.Joints[JointType.FootLeft].Position.X,
-                            sk.Joints[JointType.FootLeft].Position.Y,
-                            sk.Joints[JointType.FootLeft].Position.Z));
-
-                        _userProfiles[currentPlayer].SetVector3(JointType.FootRight, new Vector3(
-                            sk.Joints[JointType.FootRight].Position.X,
-                            sk.Joints[JointType.FootRight].Position.Y,
-                            sk.Joints[JointType.FootRight].Position.Z));
-
-                        return; // TODO : We must remove that and count the number of human tracked (2 max)
+                        return;
                     }
                 }
             }
         }
-
-        #endregion
     }
 }
