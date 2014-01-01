@@ -20,6 +20,7 @@ namespace Yna.Engine.Input
         private float[] _pressure;
         private int _maxFingerPoints;
         private bool _needUpdate;
+        private Vector2 _sensitivity;
 
         public int MaxFingerPoints
         {
@@ -29,6 +30,12 @@ namespace Yna.Engine.Input
         public bool Available
         {
             get { return TouchPanel.IsGestureAvailable; }
+        }
+
+        public Vector2 Sensitivity
+        {
+            get { return _sensitivity; }
+            set { _sensitivity = value; }
         }
 
         public YnTouch(Game game)
@@ -44,6 +51,7 @@ namespace Yna.Engine.Input
             else
                 _maxFingerPoints = 0;
 #endif
+            _sensitivity = Vector2.One;
             _needUpdate = true;
         }
 
@@ -191,8 +199,8 @@ namespace Yna.Engine.Input
                 return Vector2.Zero;
 
             var v = _position[id] - _lastPosition[id];
-            v.X = (Math.Abs(v.X) > 100) ? 0 : v.X;
-            v.Y = (Math.Abs(v.Y) > 100) ? 0 : v.Y;
+            v.X = (Math.Abs(v.X) > 100) ? 0 : v.X * _sensitivity.X;
+            v.Y = (Math.Abs(v.Y) > 100) ? 0 : v.Y * _sensitivity.Y;
 
             return v;
         }

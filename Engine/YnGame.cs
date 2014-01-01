@@ -79,13 +79,12 @@ namespace Yna.Engine
 
         #region GameState pattern
 
-        /// <summary>
-        /// Load assets from content manager
-        /// </summary>
-        protected override void LoadContent()
+        protected override void Initialize()
         {
-            base.LoadContent();
-            GraphicsDevice.Viewport = new Viewport(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
+            base.Initialize();
+
+            if (YnG.GraphicsDevice == null)
+                YnG.GraphicsDevice = GraphicsDevice;
         }
 
         /// <summary>

@@ -16,6 +16,7 @@ namespace Yna.Engine.Input
         private MouseState _mouseState;
         private MouseState _lastMouseState;
         private Vector2 _delta;
+        private Vector2 _sensitivity;
 
         #region Fields
 
@@ -44,6 +45,12 @@ namespace Yna.Engine.Input
             get { return _delta; }
         }
 
+        public Vector2 Sensitivity
+        {
+            get { return _sensitivity; }
+            set { _sensitivity = value; }
+        }
+
         /// <summary>
         /// Specifies whether the mouse is draggin
         /// </summary>
@@ -53,7 +60,6 @@ namespace Yna.Engine.Input
         {
             return Click(button) && Moving;
         }
-
 
         /// <summary>
         /// Gets the current mouse state
@@ -91,7 +97,8 @@ namespace Yna.Engine.Input
         {
             _mouseState = Mouse.GetState();
             _lastMouseState = _mouseState;
-            _delta = new Vector2();
+            _delta = Vector2.Zero;
+            _sensitivity = Vector2.One;
         }
 
         public override void Update(GameTime gameTime)
@@ -101,8 +108,8 @@ namespace Yna.Engine.Input
             _mouseState = Mouse.GetState();
 
             // Calculate the delta
-            _delta.X = _mouseState.X - _lastMouseState.X;
-            _delta.Y = _mouseState.Y - _lastMouseState.Y;
+            _delta.X = (_mouseState.X - _lastMouseState.X) * _sensitivity.X;
+            _delta.Y = (_mouseState.Y - _lastMouseState.Y) * _sensitivity.Y;
 
             base.Update(gameTime);
         }

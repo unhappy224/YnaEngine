@@ -8,8 +8,15 @@ namespace Yna.Engine.Input
 {
     public class YnGamepad : GameComponent
     {
-        GamePadState [] state;
-        GamePadState [] lastState;
+        private GamePadState [] state;
+        private GamePadState [] lastState;
+        private Vector2 _sensitivity;
+
+        public Vector2 Sensitivity
+        {
+            get { return _sensitivity; }
+            set { _sensitivity = value; }
+        }
 
         public YnGamepad(Game game)
             : base(game)
@@ -22,6 +29,8 @@ namespace Yna.Engine.Input
                 state[i] = GamePad.GetState((PlayerIndex)i);
                 lastState[i] = state[i];
             }
+
+            _sensitivity = Vector2.One;
         }
 
         public override void Update(GameTime gameTime)
@@ -71,9 +80,9 @@ namespace Yna.Engine.Input
         public Vector2 ThumbSticks(PlayerIndex index, bool left)
         {
             if (left)
-                return state[(int)index].ThumbSticks.Left;
+                return state[(int)index].ThumbSticks.Left * _sensitivity;
             else
-                return state[(int)index].ThumbSticks.Right;
+                return state[(int)index].ThumbSticks.Right * _sensitivity;
         }
 
         #region Digital pad

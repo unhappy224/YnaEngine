@@ -55,6 +55,7 @@
     <Compile Include="Graphics\YnScene.cs" />
     <Compile Include="Resources\ResourceHelper.cs" />
     <Compile Include="YnBasicCollection.cs" />
+    <Compile Include="YnBootstrap.cs" />
     <Compile Include="YnGameObjectCollection.cs" />
     <Compile Include="YnGameObject.cs" />
     <Compile Include="Graphics\Event\InterpolatorEvents.cs" />
