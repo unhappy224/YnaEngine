@@ -119,6 +119,11 @@ namespace Yna.Engine.Audio
                 SDL2.SDL_mixer.Mix_PlayChannel(-1, soundId, 0);
             }
         }
+		
+		public override void PlaySound(string path)
+        {
+            PlaySound(path, _soundVolume, 1.0f, 0.0f);
+        }
 
         public override void Dispose()
         {

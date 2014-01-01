@@ -23,6 +23,12 @@ namespace Yna.Engine.Audio
             set { _audioAdapter.SoundEnabled = value; }
         }
 
+        public float SoundVolume
+        {
+            get { return _audioAdapter.SoundVolume; }
+            set { _audioAdapter.SoundVolume = value; }
+        }
+
         /// <summary>
         /// Active or desactive music
         /// </summary>
@@ -106,7 +112,7 @@ namespace Yna.Engine.Audio
         /// <param name="assetName">Name of the sound</param>
         public void PlaySound(string assetName)
         {
-            PlaySound(assetName, 1.0f, 1.0f, 0.0f);
+            PlaySound(assetName, SoundVolume, 1.0f, 0.0f);
         }
 
         #endregion

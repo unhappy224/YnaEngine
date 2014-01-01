@@ -20,6 +20,10 @@ namespace Yna.Engine.Audio
         {
         }
 
+        public override void PlaySound(string path)
+        {
+        }
+
         public override void PlayMusic(string path, bool repeat)
         {
         }

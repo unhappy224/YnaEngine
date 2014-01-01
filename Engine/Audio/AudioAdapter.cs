@@ -18,6 +18,7 @@ namespace Yna.Engine.Audio
         protected bool _soundEnabled;
         protected bool _musicEnabled;
         protected float _musicVolume;
+        protected float _soundVolume;
         protected bool _repeatMusic;
         protected AudioState _audioState;
 
@@ -33,6 +34,12 @@ namespace Yna.Engine.Audio
         {
             get { return _soundEnabled; }
             set { _soundEnabled = value; }
+        }
+
+        public float SoundVolume
+        {
+            get { return _soundVolume; }
+            set { _soundVolume = value; }
         }
 
         public float MusicVolume
@@ -79,6 +86,7 @@ namespace Yna.Engine.Audio
 
         // Sound
         public abstract void PlaySound(string path, float volume, float pitch, float pan);
+        public abstract void PlaySound(string path);
 
 		public abstract void Dispose();
     }

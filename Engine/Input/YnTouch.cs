@@ -35,7 +35,11 @@ namespace Yna.Engine.Input
         public Vector2 Sensitivity
         {
             get { return _sensitivity; }
-            set { _sensitivity = value; }
+            set
+            {
+                if (value.X >= 0.0f && value.Y >= 0.0f)
+                    _sensitivity = value;
+            }
         }
 
         public YnTouch(Game game)

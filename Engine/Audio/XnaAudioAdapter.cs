@@ -96,6 +96,11 @@ namespace Yna.Engine.Audio
             }
         }
 
+        public override void PlaySound(string path)
+        {
+            PlaySound(path, _soundVolume, 1.0f, 0.0f);
+        }
+
         #endregion
 
         public override void Dispose()

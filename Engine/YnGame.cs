@@ -27,16 +27,6 @@ namespace Yna.Engine
         /// Graphics, Services and helpers are initialized
         /// </summary>
         public YnGame()
-            : this(800, 600, 800, 600, "")
-        {
-        }
-
-        public YnGame(int width, int height, string title)
-            : this(width, height, width, height, title) 
-        {
-        }
-
-        public YnGame(int width, int height, int referenceWidth, int referenceHeight, string title)
             : base()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -53,13 +43,16 @@ namespace Yna.Engine
             YnG.AudioManager = new AudioManager();
             YnG.Content = Content;
             YnG.StateManager = new YnStateManager(this); ;
-            YnG.StorageManager = new StorageManager();
+            YnG.StorageManager = StorageManager.Instance;
 
             Components.Add(YnG.Keys);
             Components.Add(YnG.Mouse);
             Components.Add(YnG.Gamepad);
             Components.Add(YnG.Touch);
             Components.Add(YnG.StateManager);
+
+            YnScreen.Setup(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight, false);
+            Window.Title = string.Format("{0} {1}", GameTitle, GameVersion);
 
 #if WINDOWS_PHONE_7
             // 30 FPS for Windows Phone 7
@@ -68,8 +61,24 @@ namespace Yna.Engine
             // Battery saving when screen suspended
             InactiveSleepTime = TimeSpan.FromSeconds(1);
 #endif
+        }
 
-#if !WINDOWS_PHONE && !ANDROID
+        public YnGame(YnBootstrap boot)
+            : this()
+        {
+            boot.Load();
+            boot.Apply();
+        }
+
+        public YnGame(int width, int height, string title)
+            : this(width, height, width, height, title) 
+        {
+        }
+
+        public YnGame(int width, int height, int referenceWidth, int referenceHeight, string title)
+            : this()
+        {
+#if !WINDOWS_PHONE_7 && !WINDOWS_PHONE_8 && !ANDROID
             YnScreen.Setup(width, height, referenceWidth, referenceHeight, true);
             this.Window.Title = title;
 #endif

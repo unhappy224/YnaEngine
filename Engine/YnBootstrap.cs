@@ -3,13 +3,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Yna.Engine.Storage;
 
 namespace Yna.Engine
 {
     [Serializable]
     public class YnBootstrap
     {
-        public static string ConfigurationFolder = "data";
+        public static string ConfigurationFolder = "";
         public static string ConfigurationFilename = "settings.yna";
 
         // Rendering
@@ -17,6 +18,8 @@ namespace Yna.Engine
         public int Height { get; set; }
         public string Title { get; set; }
         public bool Fullscreen { get; set; }
+        public int ReferenceWidth { get; set; }
+        public int ReferenceHeight { get; set; }
 
         // Audio
         public float SoundVolume { get; set; }
@@ -37,6 +40,8 @@ namespace Yna.Engine
         {
             Width = 800;
             Height = 600;
+            ReferenceWidth = Width;
+            ReferenceHeight = Height;
             Title = "YnGame";
             Fullscreen = false;
 
@@ -54,14 +59,16 @@ namespace Yna.Engine
             TouchSensitivity = Vector2.One;
         }
 
-        public bool LoadConfiguration()
+        public bool Load()
         {
-            var config = YnG.StorageManager.Load<YnBootstrap>(ConfigurationFolder, ConfigurationFilename);
+            var config = StorageManager.Instance.Load<YnBootstrap>(ConfigurationFolder, ConfigurationFilename);
             
             if (config != null)
             {
                 Width = config.Width;
                 Height = config.Height;
+                ReferenceWidth = config.ReferenceWidth;
+                ReferenceHeight = config.ReferenceHeight;
                 Title = config.Title;
                 Fullscreen = config.Fullscreen;
 
@@ -82,12 +89,54 @@ namespace Yna.Engine
             return config != null;
         }
 
-        public void SaveConfiguration()
+        public void Apply()
         {
-            YnG.StorageManager.Save<YnBootstrap>(ConfigurationFolder, ConfigurationFilename, this);
+            YnScreen.Setup(Width, Height, ReferenceWidth, ReferenceHeight, true);
+            YnScreen.IsFullScreen = Fullscreen;
+            YnG.Game.Window.Title = Title;
+
+            YnG.AudioManager.SoundEnabled = SoundEnabled;
+            YnG.AudioManager.SoundVolume = SoundVolume;
+            YnG.AudioManager.MusicEnabled = MusicEnabled;
+            YnG.AudioManager.MusicVolume = MusicVolume;
+
+            YnG.Mouse.Enabled = MouseEnabled;
+            YnG.Mouse.Sensitivity = MouseSensitivity;
+            YnG.Gamepad.Enabled = GamepadEnabled;
+            YnG.Gamepad.Sensitivity = GamepadSensitivity;
+            YnG.Touch.Enabled = TouchEnabled;
+            YnG.Touch.Sensitivity = TouchSensitivity;
         }
 
-        public void LoadCLIParameters(string[] args)
+        public void Save(bool needUpdate)
+        {
+            if (needUpdate)
+            {
+                Width = YnScreen.Width;
+                Height = YnScreen.Height;
+                ReferenceWidth = YnScreen.ReferenceWidth;
+                ReferenceHeight = YnScreen.ReferenceHeight;
+                Title = YnG.Game.Window.Title;
+                Fullscreen = YnScreen.IsFullScreen;
+
+                SoundEnabled = YnG.AudioManager.SoundEnabled;
+                SoundVolume = YnG.AudioManager.SoundVolume;
+                MusicEnabled = YnG.AudioManager.MusicEnabled;
+                MusicVolume = YnG.AudioManager.MusicVolume;
+
+                KeyboardEnabled = YnG.Keys.Enabled;
+                MouseEnabled = YnG.Mouse.Enabled;
+                MouseSensitivity = YnG.Mouse.Sensitivity;
+                GamepadEnabled = YnG.Gamepad.Enabled;
+                GamepadSensitivity = YnG.Gamepad.Sensitivity;
+                TouchEnabled = YnG.Touch.Enabled;
+                TouchSensitivity = YnG.Touch.Sensitivity;
+            }
+
+             StorageManager.Instance.Save<YnBootstrap>(ConfigurationFolder, ConfigurationFilename, this);
+        }
+
+        public void LoadCLIParameters(string[] args, bool needApply, bool needSave)
         {
             int size = args.Length;
 
@@ -96,6 +145,12 @@ namespace Yna.Engine
                 for (int i = 0; i < size; i++)
                     ParseCLIParameter(args[i]);
             }
+
+            if (needApply)
+                Apply();
+
+            if (needSave)
+                Save(false);
         }
 
         private void ParseCLIParameter(string param)

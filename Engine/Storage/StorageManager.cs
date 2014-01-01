@@ -9,8 +9,32 @@ namespace Yna.Engine.Storage
     public class StorageManager
     {
         private IStorageDevice _storageDevice;
+        private static StorageManager _instance;
+        private static object _lock = new object();
 
-        public StorageManager()
+        public IStorageDevice StorageDevice
+        {
+            get { return _storageDevice; }
+            set { _storageDevice = value; }
+        }
+
+        public static StorageManager Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    lock(_lock)
+                    {
+                        if (_instance == null)
+                            _instance = new StorageManager();
+                    }
+                }
+                return _instance;
+            }
+        }
+
+        private StorageManager()
         {
 #if WINDOWS_PHONE_7
             _storageDevice = new XnaPhoneStorageDevice();
@@ -21,11 +45,7 @@ namespace Yna.Engine.Storage
 #else
             _storageDevice = new BasicStorageDevice();
 #endif
-        }
-
-        public StorageManager(IStorageDevice storageDevice)
-        {
-            _storageDevice = storageDevice;
+            _instance = this;
         }
 
         /// <summary>
