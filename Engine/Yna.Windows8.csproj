@@ -251,6 +251,7 @@
     <Compile Include="Script\MoveScript.cs" />
     <Compile Include="Script\ScriptAnimator.cs" />
     <Compile Include="Script\WaitScript.cs" />
+	<Compile Include="YnBootstrap.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">

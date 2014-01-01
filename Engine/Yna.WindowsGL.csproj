@@ -181,6 +181,7 @@
     <Compile Include="Script\MoveScript.cs" />
     <Compile Include="Script\ScriptAnimator.cs" />
     <Compile Include="Script\WaitScript.cs" />
+	<Compile Include="YnBootstrap.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\Effects\NormalMapEffect.dx11.mgfxo" />

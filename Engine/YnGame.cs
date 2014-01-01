@@ -90,10 +90,10 @@ namespace Yna.Engine
 
         protected override void Initialize()
         {
-            base.Initialize();
-
             if (YnG.GraphicsDevice == null)
                 YnG.GraphicsDevice = GraphicsDevice;
+
+            base.Initialize();
         }
 
         /// <summary>

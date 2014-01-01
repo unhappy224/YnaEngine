@@ -7,7 +7,9 @@ using Yna.Engine.Storage;
 
 namespace Yna.Engine
 {
+#if !NETFX_CORE && !WINDOWS_PHONE
     [Serializable]
+#endif
     public class YnBootstrap
     {
         public static string ConfigurationFolder = "";
