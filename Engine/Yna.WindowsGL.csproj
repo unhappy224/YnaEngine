@@ -54,14 +54,6 @@
     <Compile Include="Extensions\ViewportExtension.cs" />
     <Compile Include="Graphics\YnScene.cs" />
     <Compile Include="Resources\ResourceHelper.cs" />
-    <Compile Include="Window\Winforms\GraphicsDeviceControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Window\Winforms\GraphicsDeviceService.cs" />
-    <Compile Include="Window\Winforms\ServiceContainer.cs" />
-    <Compile Include="Window\Winforms\YnWinformsControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
     <Compile Include="YnBasicCollection.cs" />
     <Compile Include="YnGameObjectCollection.cs" />
     <Compile Include="YnGameObject.cs" />
@@ -199,15 +191,7 @@
     <Reference Include="MonoGame.Framework">
       <HintPath>..\ThirdParty\MonoGame\WindowsGL\MonoGame.Framework.dll</HintPath>
     </Reference>
-    <Reference Include="OpenTK">
-      <HintPath>..\ThirdParty\MonoGame\WindowsGL\OpenTK.dll</HintPath>
-    </Reference>
-    <Reference Include="OpenTK.GLControl">
-      <HintPath>..\ThirdParty\MonoGame\WindowsGL\OpenTK.GLControl.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup />

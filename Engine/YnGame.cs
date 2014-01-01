@@ -17,8 +17,6 @@ namespace Yna.Engine
     public class YnGame : Game
     {
         protected GraphicsDeviceManager graphics = null;
-        protected SpriteBatch spriteBatch = null;
-        protected YnStateManager stateManager = null;
         public static string GameTitle = "Yna Game";
         public static string GameVersion = "1.0.0.0";
 
@@ -29,40 +27,39 @@ namespace Yna.Engine
         /// Graphics, Services and helpers are initialized
         /// </summary>
         public YnGame()
+            : this(800, 600, 800, 600, "")
+        {
+        }
+
+        public YnGame(int width, int height, string title)
+            : this(width, height, width, height, title) 
+        {
+        }
+
+        public YnGame(int width, int height, int referenceWidth, int referenceHeight, string title)
             : base()
         {
-            this.graphics = new GraphicsDeviceManager(this);
-            this.Content.RootDirectory = "Content";
-            this.stateManager = new YnStateManager(this);
-
-            YnKeyboard keyboardComponent = new YnKeyboard(this);
-            YnMouse mouseComponent = new YnMouse(this);
-            YnGamepad gamepadComponent = new YnGamepad(this);
-            YnTouch touchComponent = new YnTouch(this);
-
-            Components.Add(keyboardComponent);
-            Components.Add(mouseComponent);
-            Components.Add(gamepadComponent);
-            Components.Add(touchComponent);
-            Components.Add(stateManager);
+            graphics = new GraphicsDeviceManager(this);
+            Content.RootDirectory = "Content";
 
             // Registry globals objects
             YnG.Game = this;
-            YnG.GraphicsDeviceManager = this.graphics;
-            YnG.Keys = keyboardComponent;
-            YnG.Mouse = mouseComponent;
-            YnG.Gamepad = gamepadComponent;
-            YnG.Touch = touchComponent;
-            YnG.StateManager = stateManager;
-            YnG.StorageManager = new StorageManager();
+            YnG.GraphicsDevice = GraphicsDevice;
+            YnG.GraphicsDeviceManager = graphics;
+            YnG.Keys = new YnKeyboard(this);
+            YnG.Mouse = new YnMouse(this);
+            YnG.Gamepad = new YnGamepad(this);
+            YnG.Touch = new YnTouch(this);
             YnG.AudioManager = new AudioManager();
             YnG.Content = Content;
-            YnG.GraphicsDevice = GraphicsDevice;
+            YnG.StateManager = new YnStateManager(this); ;
+            YnG.StorageManager = new StorageManager();
 
-#if !ANDROID
-            this.Window.Title = String.Format("{0} - v{1}", GameTitle, GameVersion);
-#endif
-            YnScreen.Setup(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight, false);
+            Components.Add(YnG.Keys);
+            Components.Add(YnG.Mouse);
+            Components.Add(YnG.Gamepad);
+            Components.Add(YnG.Touch);
+            Components.Add(YnG.StateManager);
 
 #if WINDOWS_PHONE_7
             // 30 FPS for Windows Phone 7
@@ -71,17 +68,7 @@ namespace Yna.Engine
             // Battery saving when screen suspended
             InactiveSleepTime = TimeSpan.FromSeconds(1);
 #endif
-        }
 
-        public YnGame(int width, int height, string title)
-            : this(width, height, width, height, title) 
-        {
-
-        }
-
-        public YnGame(int width, int height, int referenceWidth, int referenceHeight, string title)
-            : this()
-        {
 #if !WINDOWS_PHONE && !ANDROID
             YnScreen.Setup(width, height, referenceWidth, referenceHeight, true);
             this.Window.Title = title;
@@ -98,7 +85,6 @@ namespace Yna.Engine
         protected override void LoadContent()
         {
             base.LoadContent();
-            this.spriteBatch = new SpriteBatch(GraphicsDevice);
             GraphicsDevice.Viewport = new Viewport(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
         }
 

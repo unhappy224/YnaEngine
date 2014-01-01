@@ -17,21 +17,22 @@ namespace Yna.Engine
     /// </summary>
     public static class YnG
     {
-        private static GraphicsDevice _device;
-        private static ContentManager _content;
-
         /// <summary>
         /// Gets or Set the Game instance
         /// </summary>
-        public static Game Game { get; set; }
+        public static Game Game
+        {
+            get;
+            internal set;
+        }
 
         /// <summary>
         /// Gets the GraphicsDevice instance relative to the Game object
         /// </summary>
         public static GraphicsDevice GraphicsDevice
         {
-            get { return _device; }
-            internal set { _device = value; }
+            get;
+            internal set;
         }
 
         #region Managers
@@ -39,31 +40,46 @@ namespace Yna.Engine
         /// <summary>
         /// Gets the GraphicsDeviceManager relative to the Game object
         /// </summary>
-        public static GraphicsDeviceManager GraphicsDeviceManager { get; set; }
-
+        public static GraphicsDeviceManager GraphicsDeviceManager
+        {
+            get;
+            internal set;
+        }
         /// <summary>
         /// Gets the ContentManager instance relative to the Game object
         /// </summary>
         public static ContentManager Content
         {
-            get { return _content; }
-            internal set { _content = value; }
+            get;
+            internal set;
         }
 
         /// <summary>
         /// Gets or Set the State Manager
         /// </summary>
-        public static YnStateManager StateManager { get; set; }
+        public static YnStateManager StateManager
+        {
+            get;
+            internal set;
+        }
 
         /// <summary>
         /// Gets or Set the audio manager
         /// </summary>
-        public static AudioManager AudioManager { get; set; }
+        public static AudioManager AudioManager
+        {
+            get;
+            internal set;
+        }
 
         /// <summary>
         /// Gets or sets the storage manager
         /// </summary>
-        public static StorageManager StorageManager { get; set; }
+        public static StorageManager StorageManager
+        {
+            get;
+            internal set;
+        }
 
         #endregion
 
@@ -72,22 +88,38 @@ namespace Yna.Engine
         /// <summary>
         /// Gets or Set the keyboard states
         /// </summary>
-        public static YnKeyboard Keys { get; set; }
+        public static YnKeyboard Keys
+        {
+            get;
+            internal set;
+        }
 
         /// <summary>
         /// Gets or Set the mouse states
         /// </summary>
-        public static YnMouse Mouse { get; set; }
+        public static YnMouse Mouse
+        {
+            get;
+            internal set;
+        }
 
         /// <summary>
         /// Gets or Set the Gamepad states
         /// </summary>
-        public static YnGamepad Gamepad { get; set; }
+        public static YnGamepad Gamepad
+        {
+            get;
+            internal set;
+        }
 
         /// <summary>
         /// Gets or Set the Touch states
         /// </summary>
-        public static YnTouch Touch { get; set; }
+        public static YnTouch Touch
+        {
+            get;
+            internal set;
+        }
 
         #endregion
 
