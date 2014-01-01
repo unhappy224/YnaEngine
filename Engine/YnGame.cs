@@ -56,6 +56,8 @@ namespace Yna.Engine
             YnG.StateManager = stateManager;
             YnG.StorageManager = new StorageManager();
             YnG.AudioManager = new AudioManager();
+            YnG.Content = Content;
+            YnG.GraphicsDevice = GraphicsDevice;
 
 #if !ANDROID
             this.Window.Title = String.Format("{0} - v{1}", GameTitle, GameVersion);

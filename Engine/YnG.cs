@@ -17,6 +17,9 @@ namespace Yna.Engine
     /// </summary>
     public static class YnG
     {
+        private static GraphicsDevice _device;
+        private static ContentManager _content;
+
         /// <summary>
         /// Gets or Set the Game instance
         /// </summary>
@@ -27,7 +30,8 @@ namespace Yna.Engine
         /// </summary>
         public static GraphicsDevice GraphicsDevice
         {
-            get { return Game.GraphicsDevice; }
+            get { return _device; }
+            internal set { _device = value; }
         }
 
         #region Managers
@@ -42,7 +46,8 @@ namespace Yna.Engine
         /// </summary>
         public static ContentManager Content
         {
-            get { return Game.Content; }
+            get { return _content; }
+            internal set { _content = value; }
         }
 
         /// <summary>
