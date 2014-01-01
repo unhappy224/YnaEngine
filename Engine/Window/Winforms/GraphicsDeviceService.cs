@@ -33,17 +33,13 @@ namespace Yna.Engine.Window.Winforms
     {
         #region Fields
 
-
         // Singleton device service instance.
         static GraphicsDeviceService singletonInstance;
-
 
         // Keep track of how many controls are sharing the singletonInstance.
         static int referenceCount;
 
-
         #endregion
-
 
         /// <summary>
         /// Constructor is private, because this is a singleton class:
@@ -70,16 +66,14 @@ namespace Yna.Engine.Window.Winforms
         /// <summary>
         /// Gets a reference to the singleton instance.
         /// </summary>
-        public static GraphicsDeviceService AddRef(IntPtr windowHandle,
-                                                   int width, int height)
+        public static GraphicsDeviceService AddRef(IntPtr windowHandle, int width, int height)
         {
             // Increment the "how many controls sharing the device" reference count.
             if (Interlocked.Increment(ref referenceCount) == 1)
             {
                 // If this is the first control to start using the
                 // device, we must create the singleton instance.
-                singletonInstance = new GraphicsDeviceService(windowHandle,
-                                                              width, height);
+                singletonInstance = new GraphicsDeviceService(windowHandle, width, height);
             }
 
             return singletonInstance;
