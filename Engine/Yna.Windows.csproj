@@ -39,6 +39,8 @@
     <Compile Include="Audio\DummyAudioAdapter.cs" />
     <Compile Include="Audio\XnaAudioAdapter.cs" />
     <Compile Include="Extensions\BoundingFrustrumExtension.cs" />
+    <Compile Include="Graphics3D\Importer\Babylonjs\BabylonFile.cs" />
+    <Compile Include="Graphics3D\Importer\Babylonjs\BabylonImporter.cs" />
     <Compile Include="Graphics\Component\MouseEventDispatcher.cs" />
     <Compile Include="Graphics\Component\SpritePhysics.cs" />
     <Compile Include="Graphics\Component\SpriteComponent.cs" />
@@ -54,6 +56,7 @@
     <Compile Include="Extensions\ViewportExtension.cs" />
     <Compile Include="Graphics\YnScene.cs" />
     <Compile Include="Resources\ResourceHelper.cs" />
+    <Compile Include="Utils\SimpleJSON.cs" />
     <Compile Include="YnBasicCollection.cs" />
     <Compile Include="YnBootstrap.cs" />
     <Compile Include="YnGameObjectCollection.cs" />

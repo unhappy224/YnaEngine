@@ -22,7 +22,7 @@ namespace Yna.Engine.Graphics3D.Geometry
     ///     and call in first PreDraw() method. Do your stuff after that
     /// </summary>
     /// <typeparam name="T">Type of IVertexType</typeparam>
-    public abstract class BaseGeometry<T> where T : struct, IVertexType
+    public class BaseGeometry<T> where T : struct, IVertexType
     {
         #region Protected declarations
     
@@ -57,6 +57,12 @@ namespace Yna.Engine.Graphics3D.Geometry
         {
             get { return _vertices; }
             protected set { _vertices = value; }
+        }
+
+        public short[] indices
+        {
+            get { return _indices; }
+            protected set { _indices = value; }
         }
 
         /// <summary>
@@ -195,12 +201,12 @@ namespace Yna.Engine.Graphics3D.Geometry
         /// <summary>
         /// Create vertex array
         /// </summary>
-        protected abstract void CreateVertices();
+        protected virtual void CreateVertices() { }
 
         /// <summary>
         /// Create index array
         /// </summary>
-        protected abstract void CreateIndices();
+        protected virtual void CreateIndices() { }
 
         /// <summary>
         /// Create vertex buffer and index buffer
@@ -212,6 +218,17 @@ namespace Yna.Engine.Graphics3D.Geometry
 
             _indexBuffer = new IndexBuffer(YnG.GraphicsDevice, IndexElementSize.SixteenBits, _indices.Length, BufferUsage.WriteOnly);
             _indexBuffer.SetData(_indices);
+        }
+
+        public static BaseGeometry<T> CreateGeometry<T>(T[] vertices, short[] indices) where T : struct, IVertexType
+        {
+            BaseGeometry<T> geometry = new BaseGeometry<T>();
+
+            geometry.Vertices = vertices;
+            geometry.indices = indices;
+            geometry.GenerateGeometry();
+
+            return geometry;
         }
 
         /// <summary>

@@ -149,8 +149,8 @@ namespace Yna.Engine.Graphics.Controller
                 else if (_stickPosition.Y > Y + _bgTexture.Height * _scale.Y)
                     _stickPosition.Y = Y + _bgTexture.Height * _scale.Y;
 
-                _delta.X = round((_stickPosition.X - _startPosition.X) / _bgTexture.Width * _scale.X);
-                _delta.Y = round((_stickPosition.Y - _startPosition.Y) / _bgTexture.Height * _scale.Y);
+                _delta.X = Round((_stickPosition.X - _startPosition.X) / _bgTexture.Width * _scale.X);
+                _delta.Y = Round((_stickPosition.Y - _startPosition.Y) / _bgTexture.Height * _scale.Y);
 
                 _delta.X = ((Math.Abs(_delta.X) < _deadZone) ? 0.0f : _delta.X) * _sensitivity.X;
                 _delta.Y = ((Math.Abs(_delta.Y) < _deadZone) ? 0.0f : _delta.Y) * _sensitivity.Y;
@@ -189,7 +189,7 @@ namespace Yna.Engine.Graphics.Controller
             _delta.Y = 0.0f;
         }
 
-        private float round(float value)
+        private float Round(float value)
         {
             return (float)Math.Round(value * 1000.0f) / 1000.0f;
         }

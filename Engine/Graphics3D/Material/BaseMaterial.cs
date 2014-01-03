@@ -15,6 +15,9 @@ namespace Yna.Engine.Graphics3D.Material
     /// </summary>
     public abstract class BaseMaterial
     {
+        protected string _id;
+        protected string _name;
+
         // The effect to use
         protected Effect _effect;
         protected string _effectName;
@@ -34,6 +37,18 @@ namespace Yna.Engine.Graphics3D.Material
         protected BaseLight _light;
 
         #region Properties
+
+        public string Id
+        {
+            get { return _id; }
+            set { _id = value; }
+        }
+
+        public string Name
+        {
+            get { return _id; }
+            set { _id = value; }
+        }
 
         /// <summary>
         /// Gets or sets the current effect
@@ -65,6 +80,12 @@ namespace Yna.Engine.Graphics3D.Material
         {
             get { return _texture; }
             set { _texture = value; }
+        }
+
+        public string TextureName
+        {
+            get { return _textureName; }
+            set { _textureName = value; }
         }
 
         /// <summary>
