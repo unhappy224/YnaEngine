@@ -6,6 +6,8 @@ namespace LightEngine.BabylonImporter
     {
         public string name;
         public string id;
+        public string parentId;
+        public string lockedTargetId;
         public float[] position;
         public float[] target;
         public float fov;
@@ -23,7 +25,11 @@ namespace LightEngine.BabylonImporter
         public string name;
         public string id;
         public float type;
-        public float[] data;
+        public float[] position;
+        public float[] direction;
+        public float angle;
+        public float exponent;
+        public float[] groundColor;
         public float intensity;
         public float[] diffuse;
         public float[] specular;
@@ -41,8 +47,8 @@ namespace LightEngine.BabylonImporter
         public float alpha;
         public bool backFaceCulling;
         public BabylonTexture diffuseTexture;
-        public BabylonTexture opacityTexture;
-
+        public BabylonTexture specularTexture;
+        public BabylonTexture bumpTexture;
     }
 
     public class BabylonTexture
@@ -63,6 +69,13 @@ namespace LightEngine.BabylonImporter
         public int coordinatesIndex;
     }
 
+    public class BabylonMultiMaterial
+    {
+        public string name;
+        public string id;
+        public int materials;
+    }
+
     public struct BabylonSubMesh
     {
         public int materialIndex;
@@ -76,17 +89,27 @@ namespace LightEngine.BabylonImporter
     {
         public string name;
         public string id;
+        public string parentId;
         public string materialId;
         public float[] position;
         public float[] rotation;
+        public float[] rotationQuaternion;
         public float[] scaling;
         public bool isVisible;
         public bool isEnabled;
         public bool checkCollisions;
         public int billboardMode;
-        public int uvCount;
-        public float[] vertices;
+        public bool receiveShadow;
+        public int physicsImpostor;
+        public float physicsMass;
+        public float physicsFriction;
+        public float physicsRestitution;
+        public float[] positions;
+        public float[] normals;
         public float[] indices;
+        public float[] uvs;
+        public float[] uvs2;
+        public float[] colors;
         public BabylonSubMesh[] subMeshes;
     }
 
@@ -101,6 +124,6 @@ namespace LightEngine.BabylonImporter
         public BabylonLight[] lights;
         public BabylonMaterial[] materials;
         public BabylonMesh[] meshes;
-        public Object[] multiMaterials;
+        public BabylonMultiMaterial[] multiMaterials;
     }
 }

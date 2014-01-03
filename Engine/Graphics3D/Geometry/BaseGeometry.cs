@@ -188,8 +188,7 @@ namespace Yna.Engine.Graphics3D.Geometry
         {
             if (_constructed)
             {
-                _vertexBuffer.Dispose();
-                _indexBuffer.Dispose();
+                return;
             }
 
             CreateVertices();
@@ -220,7 +219,7 @@ namespace Yna.Engine.Graphics3D.Geometry
             _indexBuffer.SetData(_indices);
         }
 
-        public static BaseGeometry<T> CreateGeometry<T>(T[] vertices, short[] indices) where T : struct, IVertexType
+        public static BaseGeometry<T> CreateGeometry(T[] vertices, short[] indices)
         {
             BaseGeometry<T> geometry = new BaseGeometry<T>();
 

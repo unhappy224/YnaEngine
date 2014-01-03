@@ -22,7 +22,116 @@ namespace LightEngine.BabylonImporter
             return meshes.ToArray();
         }
 
-        public static BabylonScene ParseJSON(string jsonString, string path)
+        public static List<YnMesh> LoadBabylonScene(string filename)
+        {
+            StreamReader file = File.OpenText(filename);
+            string data = file.ReadToEnd();
+
+            BabylonScene scene = ParseJSON(data, "");
+
+            List<YnMesh> meshes = new List<YnMesh>();
+            Dictionary<string, BasicMaterial> materials = new Dictionary<string, BasicMaterial>();
+
+            string[] temp = filename.Split(new char[] { '/' });
+            string path = String.Empty;
+            for (int i = 1, l = temp.Length - 1; i < l; i++)
+                path += (i == 1 ? "" : "/") + temp[i];
+
+            for (int i = 0, l = scene.materials.Length; i < l; i++)
+            {
+                BasicMaterial material = new BasicMaterial();
+                material.Name = scene.materials[i].name;
+                material.Id = scene.materials[i].id;
+
+                if (scene.materials[i].diffuseTexture != null)
+                    material.TextureName = path + "/" + scene.materials[i].diffuseTexture.name;
+
+                materials.Add(material.Id, material);
+            }
+
+            YnMeshGeometry mesh;
+            BaseGeometry<VertexPositionNormalTexture> geometry;
+            VertexPositionNormalTexture[] vertices;
+            short[] indices;
+
+            for (int i = 0, l = scene.meshes.Length; i < l; i++)
+            {
+                float[] verticesArray = scene.meshes[i].positions;
+                float[] indicesArray = scene.meshes[i].indices;
+                int uvCount = scene.meshes[i].uvs.Length;
+                int verticesStep = 1;
+
+                verticesStep = uvCount == 0 ? 6 : verticesStep;
+                verticesStep = uvCount == 1 ? 8 : verticesStep;
+                verticesStep = uvCount == 2 ? 10 : verticesStep;
+
+                int verticesCount = verticesArray.Length / verticesStep;
+                int facesCount = indicesArray.Length;
+
+                vertices = new VertexPositionNormalTexture[verticesCount];
+                indices = new short[facesCount];
+
+                for (int index = 0; index < verticesCount; index++)
+                {
+                    float x = verticesArray[index * verticesStep];
+                    float y = verticesArray[index * verticesStep + 1];
+                    float z = verticesArray[index * verticesStep + 2];
+                    float nx = verticesArray[index * verticesStep + 3];
+                    float ny = verticesArray[index * verticesStep + 4];
+                    float nz = verticesArray[index * verticesStep + 5];
+                    string matId = string.Empty;
+
+                    vertices[index] = new VertexPositionNormalTexture()
+                    {
+                        Position = new Vector3(x, y, z),
+                        Normal = new Vector3(nx, ny, ny),
+                        TextureCoordinate = Vector2.Zero
+                    };
+
+                    if (uvCount > 0)
+                    {
+                        float u = verticesArray[index * verticesStep + 6];
+                        float v = verticesArray[index * verticesStep + 7];
+                        vertices[index].TextureCoordinate = new Vector2(u, v);
+                    }
+                }
+
+                for (int index = 0; index < facesCount; index += 3)
+                {
+                    indices[index] = (short)indicesArray[index];
+                    indices[index + 1] = (short)indicesArray[index + 1];
+                    indices[index + 2] = (short)indicesArray[index + 2];
+                }
+
+                geometry = BaseGeometry<VertexPositionNormalTexture>.CreateGeometry(vertices, indices);
+
+                if (materials.ContainsKey(scene.meshes[i].materialId))
+                    mesh = new YnMeshGeometry(geometry, materials[scene.meshes[i].materialId]);
+                else
+                    mesh = new YnMeshGeometry(geometry);
+
+                mesh.Position = new Vector3(
+                    scene.meshes[i].position[0],
+                    scene.meshes[i].position[1],
+                    scene.meshes[i].position[2]);
+
+                mesh.Rotation = new Vector3(
+                    scene.meshes[i].rotation[0],
+                    scene.meshes[i].rotation[1],
+                    scene.meshes[i].rotation[2]);
+
+                mesh.Scale = new Vector3(
+                    scene.meshes[i].scaling[0],
+                    scene.meshes[i].scaling[1],
+                    scene.meshes[i].scaling[2]);
+
+                meshes.Add(mesh);
+            }
+
+            return meshes;
+        }
+
+        private static BabylonScene ParseJSON(string jsonString, string path)
         {
             BabylonScene scene = new BabylonScene();
 
@@ -88,149 +197,42 @@ namespace LightEngine.BabylonImporter
                 scene.meshes[i].isEnabled = jsonMesh["isEnabled"].AsBool;
                 scene.meshes[i].checkCollisions = jsonMesh["checkCollisions"].AsBool;
                 scene.meshes[i].billboardMode = jsonMesh["billboardMode"].AsInt;
-                scene.meshes[i].uvCount = jsonMesh["uvCount"].AsInt;
 
-                scene.meshes[i].vertices = getFloatNArray(jsonMesh, "vertices");
+                scene.meshes[i].positions = getFloatNArray(jsonMesh, "positions");
                 scene.meshes[i].indices = getFloatNArray(jsonMesh, "indices");
+                scene.meshes[i].uvs = getFloatNArray(jsonMesh, "uvs");
             }
 
-            return  scene;
+            return scene;
         }
 
-        public static float[] GetFloat3Array(JSONNode json, String key)
+        private static float[] GetFloat3Array(JSONNode json, String key)
         {
             float[] float3 = new float[3];
 
             JSONNode jsonFloat3 = json[key];
-            float3[0] = jsonFloat3[0].AsFloat;
-            float3[1] = jsonFloat3[1].AsFloat;
-            float3[2] = jsonFloat3[2].AsFloat;
+            float3[0] = ParseFloat(jsonFloat3[0].Value);
+            float3[1] = ParseFloat(jsonFloat3[1].Value);
+            float3[2] = ParseFloat(jsonFloat3[2].Value);
 
             return float3;
         }
 
-        public static float[] getFloatNArray(JSONNode json, String key)
+        private static float ParseFloat(string s)
+        {
+            return float.Parse(s, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture);
+        }
+
+        private static float[] getFloatNArray(JSONNode json, String key)
         {
             JSONNode jsonFloatN = json[key];
             int countElem = jsonFloatN.Count;
             float[] floatN = new float[countElem];
 
             for (int i = 0; i < countElem; i++)
-                floatN[i] = (float)jsonFloatN[i].AsFloat;
-            
+                floatN[i] = ParseFloat(jsonFloatN[i].Value);
+
             return floatN;
-        }
-
-        public static List<YnMesh> LoadBabylonScene(string filename)
-        {
-            StreamReader file = File.OpenText(filename);
-            string data = file.ReadToEnd();
-
-            BabylonScene scene = ParseJSON(data, "Content/");
-
-            List<YnMesh> meshes = new List<YnMesh>();
-            Dictionary<string, BasicMaterial> materials = new Dictionary<string, BasicMaterial>();
-
-            string [] temp = filename.Split(new char[] { '/' });
-            string path = String.Empty;
-            for (int i = 1, l = temp.Length - 1; i < l; i++)
-                path += (i == 1 ? "" : "/") + temp[i];
-
-            for (int i = 0, l = scene.materials.Length; i < l; i++)
-            {
-                BasicMaterial material = new BasicMaterial();
-                material.Name = scene.materials[i].name;
-                material.Id = scene.materials[i].id;
-
-                if (scene.materials[i].diffuseTexture != null) 
-                    material.TextureName = path + "/" + scene.materials[i].diffuseTexture.name;
-
-                materials.Add(material.Id, material);
-            }
-
-            YnMeshGeometry mesh;
-            BaseGeometry<VertexPositionNormalTexture> geometry;
-            VertexPositionNormalTexture[] vertices;
-            short[] indices;
-
-            for (int i = 0, l = scene.meshes.Length; i < l; i++)
-            {
-                float[] verticesArray = scene.meshes[i].vertices;
-                float[] indicesArray = scene.meshes[i].indices;
-                int uvCount = scene.meshes[i].uvCount;
-                int verticesStep = 1;
-
-                verticesStep = uvCount == 0 ? 6 : verticesStep;
-                verticesStep = uvCount == 1 ? 8 : verticesStep;
-                verticesStep = uvCount == 2 ? 10 : verticesStep;
-
-                int verticesCount = verticesArray.Length / verticesStep;
-                int facesCount = indicesArray.Length / 3;
-
-                vertices = new VertexPositionNormalTexture[verticesCount];
-                indices = new short[facesCount];
-               
-                for (int index = 0; index < verticesCount; index++)
-                {
-                    float x = verticesArray[index * verticesStep];
-                    float y = verticesArray[index * verticesStep + 1];
-                    float z = verticesArray[index * verticesStep + 2];
-                    float nx = verticesArray[index * verticesStep + 3];
-                    float ny = verticesArray[index * verticesStep + 4];
-                    float nz = verticesArray[index * verticesStep + 5];
-                    string matId = string.Empty;
-
-                    vertices[index] = new VertexPositionNormalTexture()
-                    {
-                        Position = new Vector3(x, y, z),
-                        Normal = new Vector3(nx, ny, ny),
-                        TextureCoordinate = Vector2.Zero
-                    };
-
-                    if (uvCount > 0)
-                    {
-                        float u = verticesArray[index * verticesStep + 6];
-                        float v = verticesArray[index * verticesStep + 7];
-                        vertices[index].TextureCoordinate = new Vector2(u, v);
-                    }
-                }
-
-                for (int index = 0; index < facesCount; index += 3)
-                {
-                    short a = (short)indicesArray[index * 3];
-                    short b = (short)indicesArray[index * 3 + 1];
-                    short c = (short)indicesArray[index * 3 + 2];
-                    indices[index] = a;
-                    indices[index + 1] = b;
-                    indices[index + 2] = c;
-                }
-
-                geometry = BaseGeometry<VertexPositionNormalTexture>.CreateGeometry<VertexPositionNormalTexture>(vertices, indices);
-
-                if (materials.ContainsKey(scene.meshes[i].materialId))
-                    mesh = new YnMeshGeometry(geometry, materials[scene.meshes[i].materialId]);
-                else
-                    mesh = new YnMeshGeometry(geometry);
-
-                mesh.Position = new Vector3(
-                    scene.meshes[i].position[0],
-                    scene.meshes[i].position[1],
-                    scene.meshes[i].position[2]);
-
-                mesh.Rotation = new Vector3(
-                    scene.meshes[i].rotation[0],
-                    scene.meshes[i].rotation[1],
-                    scene.meshes[i].rotation[2]);
-
-                mesh.Scale = new Vector3(
-                    scene.meshes[i].scaling[0],
-                    scene.meshes[i].scaling[1],
-                    scene.meshes[i].scaling[2]);
-
-                meshes.Add(mesh);
-            }
-
-            return meshes;
         }
     }
 }
