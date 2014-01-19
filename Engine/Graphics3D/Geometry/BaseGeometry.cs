@@ -25,7 +25,7 @@ namespace Yna.Engine.Graphics3D.Geometry
     public class BaseGeometry<T> where T : struct, IVertexType
     {
         #region Protected declarations
-    
+
         // Geometry
         protected T[] _vertices;
         protected short[] _indices;
@@ -270,7 +270,7 @@ namespace Yna.Engine.Graphics3D.Geometry
 
         protected virtual void PostDraw(GraphicsDevice device)
         {
-             if (_doubleSided || _wireframe)
+            if (_doubleSided || _wireframe)
                 device.RasterizerState = _oldRasterizerState;
         }
 
