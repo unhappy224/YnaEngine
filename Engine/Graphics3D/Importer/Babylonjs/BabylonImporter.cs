@@ -53,55 +53,42 @@ namespace LightEngine.BabylonImporter
             BaseGeometry<VertexPositionNormalTexture> geometry;
             VertexPositionNormalTexture[] vertices;
             short[] indices;
+            Vector3[] normals;
+            Vector2[] uvs;
 
             for (int i = 0, l = scene.meshes.Length; i < l; i++)
             {
                 float[] verticesArray = scene.meshes[i].positions;
                 float[] indicesArray = scene.meshes[i].indices;
-                int uvCount = scene.meshes[i].uvs.Length;
-                int verticesStep = 1;
+                float[] normalsArray = scene.meshes[i].normals;
+                float[] uvsArray = scene.meshes[i].uvs;
 
-                verticesStep = uvCount == 0 ? 6 : verticesStep;
-                verticesStep = uvCount == 1 ? 8 : verticesStep;
-                verticesStep = uvCount == 2 ? 10 : verticesStep;
-
-                int verticesCount = verticesArray.Length / verticesStep;
+                int verticesCount = verticesArray.Length;
                 int facesCount = indicesArray.Length;
+                int normalsCount = normalsArray.Length;
+                int uvsCount = uvsArray.Length;
+
+                if (verticesCount == 0)
+                    continue;
 
                 vertices = new VertexPositionNormalTexture[verticesCount];
                 indices = new short[facesCount];
+                normals = new Vector3[normalsCount];
+                uvs = new Vector2[uvsCount];
 
-                for (int index = 0; index < verticesCount; index++)
+                int uvsIndex = 0;
+                for (int index = 0; index < verticesCount; index += 3)
                 {
-                    float x = verticesArray[index * verticesStep];
-                    float y = verticesArray[index * verticesStep + 1];
-                    float z = verticesArray[index * verticesStep + 2];
-                    float nx = verticesArray[index * verticesStep + 3];
-                    float ny = verticesArray[index * verticesStep + 4];
-                    float nz = verticesArray[index * verticesStep + 5];
-                    string matId = string.Empty;
-
                     vertices[index] = new VertexPositionNormalTexture()
                     {
-                        Position = new Vector3(x, y, z),
-                        Normal = new Vector3(nx, ny, ny),
-                        TextureCoordinate = Vector2.Zero
+                        Position = new Vector3(verticesArray[index], verticesArray[index + 1], verticesArray[index + 2]),
+                        Normal = new Vector3(normalsArray[index], normalsArray[index + 1], normalsArray[index + 2]),
+                        TextureCoordinate = new Vector2(uvsArray[uvsIndex++], uvsArray[uvsIndex++])
                     };
-
-                    if (uvCount > 0)
-                    {
-                        float u = verticesArray[index * verticesStep + 6];
-                        float v = verticesArray[index * verticesStep + 7];
-                        vertices[index].TextureCoordinate = new Vector2(u, v);
-                    }
                 }
 
-                for (int index = 0; index < facesCount; index += 3)
-                {
+                for (int index = 0; index < facesCount; index++)
                     indices[index] = (short)indicesArray[index];
-                    indices[index + 1] = (short)indicesArray[index + 1];
-                    indices[index + 2] = (short)indicesArray[index + 2];
-                }
 
                 geometry = BaseGeometry<VertexPositionNormalTexture>.CreateGeometry(vertices, indices);
 
@@ -159,7 +146,7 @@ namespace LightEngine.BabylonImporter
                 scene.materials[i].backFaceCulling = bMaterial["backFaceCulling"].AsBool;
 
                 JSONNode dTexture = bMaterial["diffuseTexture"];
-                if (dTexture != null)
+                if (dTexture != null && dTexture.Value != "null")
                 {
                     scene.materials[i].diffuseTexture = new BabylonTexture();
                     scene.materials[i].diffuseTexture.name = path + dTexture["name"].Value;
@@ -200,6 +187,7 @@ namespace LightEngine.BabylonImporter
 
                 scene.meshes[i].positions = getFloatNArray(jsonMesh, "positions");
                 scene.meshes[i].indices = getFloatNArray(jsonMesh, "indices");
+                scene.meshes[i].normals = getFloatNArray(jsonMesh, "normals");
                 scene.meshes[i].uvs = getFloatNArray(jsonMesh, "uvs");
             }
 
