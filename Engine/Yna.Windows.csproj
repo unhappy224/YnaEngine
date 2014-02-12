@@ -39,8 +39,6 @@
     <Compile Include="Audio\DummyAudioAdapter.cs" />
     <Compile Include="Audio\XnaAudioAdapter.cs" />
     <Compile Include="Extensions\BoundingFrustrumExtension.cs" />
-    <Compile Include="Graphics3D\Importer\Babylonjs\BabylonFile.cs" />
-    <Compile Include="Graphics3D\Importer\Babylonjs\BabylonImporter.cs" />
     <Compile Include="Graphics\Component\MouseEventDispatcher.cs" />
     <Compile Include="Graphics\Component\SpritePhysics.cs" />
     <Compile Include="Graphics\Component\SpriteComponent.cs" />
